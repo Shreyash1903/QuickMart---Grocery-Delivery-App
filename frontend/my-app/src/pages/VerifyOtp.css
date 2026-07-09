@@ -1,0 +1,110 @@
+/* ======================================== */
+/* ===== VERIFY OTP PAGE ===== */
+/* ======================================== */
+
+/* Reuse common styles from ForgotPassword.css */
+/* Add OTP specific styles below */
+
+/* ===== OTP INPUT ===== */
+.otp-input-group {
+  margin-bottom: 20px;
+}
+
+.otp-input-group label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+.otp-inputs {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.otp-input {
+  width: 48px;
+  height: 54px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  border: 2px solid #e5e7eb;
+  border-radius: 12px;
+  background: #f8faff;
+  transition: all 0.3s ease;
+  outline: none;
+  font-family: inherit;
+}
+
+.otp-input:focus {
+  border-color: #0c831f;
+  box-shadow: 0 0 0 4px rgba(12, 131, 31, 0.08);
+  background: #ffffff;
+}
+
+.otp-input:hover {
+  border-color: #0c831f;
+}
+
+.otp-timer {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.otp-timer strong {
+  color: #0c831f;
+}
+
+.resend-btn {
+  background: none;
+  border: none;
+  color: #0c831f;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 4px 12px;
+  border-radius: 8px;
+}
+
+.resend-btn:hover:not(:disabled) {
+  background: rgba(12, 131, 31, 0.06);
+  transform: translateY(-1px);
+}
+
+.resend-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ======================================== */
+/* ===== RESPONSIVE - OTP ===== */
+/* ======================================== */
+
+@media (max-width: 480px) {
+  .otp-input {
+    width: 40px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .otp-inputs {
+    gap: 8px;
+  }
+}
+
+@media (max-width: 360px) {
+  .otp-input {
+    width: 34px;
+    height: 42px;
+    font-size: 16px;
+  }
+
+  .otp-inputs {
+    gap: 6px;
+  }
+}
