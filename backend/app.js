@@ -34,6 +34,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://quick-mart-grocery-delivery-app.vercel.app",
   "https://quick-mart-grocery-delivery-lnrc17abt.vercel.app",
+  /\.vercel\.app$/,  // ✅ All vercel.app URLs allowed
   // "https://quickmart-admin.vercel.app"
 ];
 
