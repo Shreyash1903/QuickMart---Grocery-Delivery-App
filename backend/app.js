@@ -29,11 +29,27 @@ const DATABASE_URL = process.env.DATABASE_URL || "mongodb://localhost:27017"; //
 connectDB(DATABASE_URL); // Calling the function to connect to the database with the specified URL
 
 // ✅ CORS configuration (VERY IMPORTANT for React + Sessions)
+const allowedOrigins = [
+  "http://localhost:3000",
+  "http://localhost:3001",
+  "https://quick-mart-grocery-delivery-app.vercel.app",
+  // "https://quickmart-admin.vercel.app"
+];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"], // React frontend + Admin app
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true, // allow cookies/session
-  }),
+  })
 );
 
 // Session middleware
