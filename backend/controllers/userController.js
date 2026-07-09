@@ -88,14 +88,12 @@ class UserController {
         return res.status(400).json({ message: "User already exists" });
       }
 
-      // 🔥 Hash the password before saving
-      const hashedPassword = await bcrypt.hash(password, 10);
-
       // If not existing user, create new user
+      // Password will be hashed by the User model pre-save hook.
       const user = new UserModel({
         name: name,
         email: email,
-        password: hashedPassword,
+        password: password,
       });
 
       // 👉 Save user in MongoDB
