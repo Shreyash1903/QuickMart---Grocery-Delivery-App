@@ -1,0 +1,484 @@
+/* ======================================== */
+/* ===== ANALYTICS PAGE ===== */
+/* ======================================== */
+
+.analytics-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ===== LOADING ===== */
+.analytics-loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f0f0f0;
+  border-top-color: #0c831f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ======================================== */
+/* ===== HEADER ===== */
+/* ======================================== */
+
+.analytics-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.analytics-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.analytics-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.analytics-title i {
+  color: #0c831f;
+}
+
+.analytics-subtitle {
+  color: #6b7280;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.analytics-header-right {
+  display: flex;
+  align-items: center;
+}
+
+.date-filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f8faff;
+  border: 2px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 0 14px;
+  height: 44px;
+}
+
+.filter-icon {
+  color: #6b7280;
+  font-size: 16px;
+}
+
+.filter-select {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 14px;
+  font-family: inherit;
+  font-weight: 500;
+  color: #333;
+  cursor: pointer;
+}
+
+/* ======================================== */
+/* ===== SUMMARY CARDS ===== */
+/* ======================================== */
+
+.analytics-summary {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.summary-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 20px 24px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.3s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
+}
+
+.summary-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 22px;
+}
+
+.summary-info {
+  flex: 1;
+}
+
+.summary-label {
+  display: block;
+  font-size: 13px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.summary-value {
+  display: block;
+  font-size: 22px;
+  font-weight: 800;
+  color: #222;
+}
+
+.summary-growth {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.summary-growth.up {
+  color: #10b981;
+}
+
+.summary-growth.down {
+  color: #ef4444;
+}
+
+/* ======================================== */
+/* ===== ANALYTICS GRID ===== */
+/* ======================================== */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-bottom: 28px;
+}
+
+.analytics-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.3s ease;
+}
+
+.analytics-card:hover {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-header h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.card-subtitle {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+/* ======================================== */
+/* ===== CHART ===== */
+/* ======================================== */
+
+.chart-placeholder {
+  padding: 8px 0;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 180px;
+  gap: 8px;
+}
+
+.chart-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  gap: 6px;
+}
+
+.chart-bar {
+  width: 100%;
+  max-width: 30px;
+  background: linear-gradient(180deg, #0c831f, #0a6a18);
+  border-radius: 4px 4px 0 0;
+  min-height: 8px;
+  animation: growBar 0.8s ease-out forwards;
+  opacity: 0;
+}
+
+.chart-bar:nth-child(1) { animation-delay: 0.05s; }
+.chart-bar:nth-child(2) { animation-delay: 0.10s; }
+.chart-bar:nth-child(3) { animation-delay: 0.15s; }
+.chart-bar:nth-child(4) { animation-delay: 0.20s; }
+.chart-bar:nth-child(5) { animation-delay: 0.25s; }
+.chart-bar:nth-child(6) { animation-delay: 0.30s; }
+.chart-bar:nth-child(7) { animation-delay: 0.35s; }
+.chart-bar:nth-child(8) { animation-delay: 0.40s; }
+.chart-bar:nth-child(9) { animation-delay: 0.45s; }
+.chart-bar:nth-child(10) { animation-delay: 0.50s; }
+.chart-bar:nth-child(11) { animation-delay: 0.55s; }
+.chart-bar:nth-child(12) { animation-delay: 0.60s; }
+
+@keyframes growBar {
+  from {
+    height: 0;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.chart-label {
+  font-size: 10px;
+  color: #6b7280;
+}
+
+/* ======================================== */
+/* ===== STATS GRID ===== */
+/* ======================================== */
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.stat-item {
+  background: #f8faff;
+  border-radius: 12px;
+  padding: 14px 16px;
+}
+
+.stat-item .stat-label {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.stat-item .stat-value {
+  font-size: 20px;
+  font-weight: 800;
+  color: #222;
+}
+
+/* ======================================== */
+/* ===== TOP PRODUCTS ===== */
+/* ======================================== */
+
+.top-products {
+  margin-bottom: 0;
+}
+
+.top-products-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.product-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 16px;
+  background: #f8faff;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.product-item:hover {
+  background: #f0f4ff;
+}
+
+.product-rank {
+  font-size: 13px;
+  font-weight: 800;
+  color: #0c831f;
+  min-width: 30px;
+}
+
+.product-name {
+  flex: 1;
+  font-weight: 600;
+  color: #222;
+}
+
+.product-stats {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.product-sales,
+.product-revenue {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.product-revenue {
+  font-weight: 700;
+  color: #0c831f;
+}
+
+/* ======================================== */
+/* ===== RESPONSIVE ===== */
+/* ======================================== */
+
+@media (max-width: 1024px) {
+  .analytics-summary {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .analytics-container {
+    padding: 16px;
+  }
+
+  .analytics-title {
+    font-size: 22px;
+  }
+
+  .analytics-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .analytics-header-right {
+    width: 100%;
+  }
+
+  .date-filter {
+    width: 100%;
+  }
+
+  .filter-select {
+    flex: 1;
+  }
+
+  .analytics-summary {
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .summary-card {
+    padding: 16px;
+  }
+
+  .summary-value {
+    font-size: 18px;
+  }
+
+  .summary-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .product-item {
+    flex-wrap: wrap;
+  }
+
+  .product-stats {
+    margin-left: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .analytics-container {
+    padding: 12px;
+  }
+
+  .analytics-title {
+    font-size: 18px;
+  }
+
+  .analytics-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .summary-card {
+    padding: 14px 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .product-stats {
+    margin-left: 0;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .chart-bars {
+    height: 120px;
+  }
+}
