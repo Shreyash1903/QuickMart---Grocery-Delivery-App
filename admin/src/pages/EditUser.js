@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { getUserById, updateUser } from "../api/usersApi";
 import {
   FaArrowLeft,
   FaUser,
@@ -38,8 +38,8 @@ function EditUser() {
   const fetchUserDetails = async () => {
     try {
       setLoading(true);
-      const res = await API.get(`/users/${id}`);
-      const user = res.data.user;
+      const res = await getUserById(id);
+      const user = res.user;
       setFormData({
         name: user.name || "",
         email: user.email || "",
@@ -67,7 +67,7 @@ function EditUser() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     if (!formData.name.trim()) {
       toast.error("❌ Name is required");
       return;
@@ -75,7 +75,7 @@ function EditUser() {
 
     try {
       setSaving(true);
-      await API.put(`/users/${id}`, {
+      await updateUser(id, {
         name: formData.name.trim(),
         role: formData.role,
         isActive: formData.isActive,
@@ -114,7 +114,10 @@ function EditUser() {
     <div className="edit-user-container">
       {/* ===== HEADER ===== */}
       <div className="edit-user-header">
-        <button onClick={() => navigate(`/admin/users/${id}`)} className="back-btn">
+        <button
+          onClick={() => navigate(`/admin/users/${id}`)}
+          className="back-btn"
+        >
           <FaArrowLeft /> Back to User
         </button>
         <h1 className="edit-user-title">Edit User</h1>
@@ -125,7 +128,7 @@ function EditUser() {
       <form className="edit-user-form" onSubmit={handleSubmit}>
         <div className="form-card">
           <h3 className="form-section-title">Basic Information</h3>
-          
+
           <div className="form-group">
             <label htmlFor="name">
               <FaUser className="input-icon" />
@@ -211,8 +214,8 @@ function EditUser() {
               </span>
             </label>
             <small className="field-hint">
-              {formData.isActive 
-                ? "User can log in and place orders" 
+              {formData.isActive
+                ? "User can log in and place orders"
                 : "User cannot log in or place orders"}
             </small>
           </div>
@@ -227,11 +230,7 @@ function EditUser() {
           >
             Cancel
           </button>
-          <button
-            type="submit"
-            className="save-btn"
-            disabled={saving}
-          >
+          <button type="submit" className="save-btn" disabled={saving}>
             {saving ? (
               <>
                 <FaSpinner className="spinning" /> Saving...

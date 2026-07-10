@@ -11,12 +11,12 @@ function AdminLayout() {
 
   // ✅ Check if admin is authenticated
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("adminToken");
     if (!token) {
-      // ❌ No token - Redirect to login
-      window.location.href = "http://localhost:3000/login";
+      // ❌ No admin token - Redirect to admin login
+      navigate("/login");
     }
-  }, []);
+  }, [navigate]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -24,18 +24,17 @@ function AdminLayout() {
 
   // ✅ Logout function
   const handleLogout = () => {
-    // Clear admin session
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    
+    // Clear only the admin session token
+    localStorage.removeItem("adminToken");
+
     // Show success message
     toast.success("👋 Logged out successfully!", {
       position: "top-right",
       autoClose: 3000,
     });
-    
-    // Redirect to user frontend login
-    window.location.href = "http://localhost:3000/login";
+
+    // Redirect to admin login
+    navigate("/login");
   };
 
   return (

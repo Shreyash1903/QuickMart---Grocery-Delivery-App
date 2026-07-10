@@ -2,7 +2,8 @@
 
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { getUserById } from "../api/usersApi";
+import { getAllOrders } from "../api/ordersApi";
 import {
   FaArrowLeft,
   FaUser,
@@ -39,8 +40,8 @@ function UserDetails() {
   const fetchUserDetails = async () => {
     try {
       setLoading(true);
-      const res = await API.get(`/users/${id}`);
-      setUser(res.data.user);
+      const res = await getUserById(id);
+      setUser(res.user);
       setError("");
     } catch (err) {
       console.error("Error fetching user:", err);
@@ -55,8 +56,8 @@ function UserDetails() {
   const fetchUserOrders = async () => {
     try {
       setOrdersLoading(true);
-      const res = await API.get(`/orders?userId=${id}&limit=10`);
-      setOrders(res.data.orders || []);
+      const res = await getAllOrders({ userId: id, page: 1, limit: 10 });
+      setOrders(res.orders || []);
     } catch (err) {
       console.error("Error fetching user orders:", err);
       setOrders([]);
@@ -66,12 +67,12 @@ function UserDetails() {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -80,18 +81,25 @@ function UserDetails() {
   };
 
   const getStatusClass = (status) => {
-    return `status-badge status-${status?.toLowerCase().replace(/\s+/g, '-') || 'unknown'}`;
+    return `status-badge status-${status?.toLowerCase().replace(/\s+/g, "-") || "unknown"}`;
   };
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Placed": return <FaClock className="status-icon" />;
-      case "Accepted": return <FaCheckCircle className="status-icon" />;
-      case "Packed": return <FaBox className="status-icon" />;
-      case "Out for Delivery": return <FaClock className="status-icon" />;
-      case "Delivered": return <FaCheckCircle className="status-icon" />;
-      case "Cancelled": return <FaTimesCircle className="status-icon" />;
-      default: return <FaBox className="status-icon" />;
+      case "Placed":
+        return <FaClock className="status-icon" />;
+      case "Accepted":
+        return <FaCheckCircle className="status-icon" />;
+      case "Packed":
+        return <FaBox className="status-icon" />;
+      case "Out for Delivery":
+        return <FaClock className="status-icon" />;
+      case "Delivered":
+        return <FaCheckCircle className="status-icon" />;
+      case "Cancelled":
+        return <FaTimesCircle className="status-icon" />;
+      default:
+        return <FaBox className="status-icon" />;
     }
   };
 
@@ -134,7 +142,7 @@ function UserDetails() {
           <FaArrowLeft /> Back to Users
         </button>
         <h1 className="user-details-title">User Details</h1>
-        <button 
+        <button
           className="edit-user-btn"
           onClick={() => navigate(`/admin/edit-user/${user._id}`)}
         >
@@ -149,9 +157,11 @@ function UserDetails() {
         </div>
         <div className="user-info">
           <h2 className="user-name">{user.name || "N/A"}</h2>
-          <span className={`user-status ${user.isActive !== false ? 'active' : 'inactive'}`}>
+          <span
+            className={`user-status ${user.isActive !== false ? "active" : "inactive"}`}
+          >
             {user.isActive !== false ? <FaCheckCircle /> : <FaTimesCircle />}
-            {user.isActive !== false ? 'Active' : 'Inactive'}
+            {user.isActive !== false ? "Active" : "Inactive"}
           </span>
         </div>
       </div>
@@ -159,7 +169,9 @@ function UserDetails() {
       {/* ===== DETAILS GRID ===== */}
       <div className="user-details-grid">
         <div className="detail-item">
-          <div className="detail-icon"><FaUser /></div>
+          <div className="detail-icon">
+            <FaUser />
+          </div>
           <div className="detail-content">
             <span className="detail-label">Full Name</span>
             <span className="detail-value">{user.name || "N/A"}</span>
@@ -167,7 +179,9 @@ function UserDetails() {
         </div>
 
         <div className="detail-item">
-          <div className="detail-icon"><FaEnvelope /></div>
+          <div className="detail-icon">
+            <FaEnvelope />
+          </div>
           <div className="detail-content">
             <span className="detail-label">Email</span>
             <span className="detail-value">{user.email || "N/A"}</span>
@@ -175,7 +189,9 @@ function UserDetails() {
         </div>
 
         <div className="detail-item">
-          <div className="detail-icon"><FaPhone /></div>
+          <div className="detail-icon">
+            <FaPhone />
+          </div>
           <div className="detail-content">
             <span className="detail-label">Phone</span>
             <span className="detail-value">{user.phone || "N/A"}</span>
@@ -183,7 +199,9 @@ function UserDetails() {
         </div>
 
         <div className="detail-item">
-          <div className="detail-icon"><FaUserTag /></div>
+          <div className="detail-icon">
+            <FaUserTag />
+          </div>
           <div className="detail-content">
             <span className="detail-label">Role</span>
             <span className={`detail-value role-badge ${user.role}`}>
@@ -193,7 +211,9 @@ function UserDetails() {
         </div>
 
         <div className="detail-item">
-          <div className="detail-icon"><FaCalendarAlt /></div>
+          <div className="detail-icon">
+            <FaCalendarAlt />
+          </div>
           <div className="detail-content">
             <span className="detail-label">Joined On</span>
             <span className="detail-value">{formatDate(user.createdAt)}</span>
@@ -202,12 +222,18 @@ function UserDetails() {
 
         <div className="detail-item">
           <div className="detail-icon">
-            {user.isActive !== false ? <FaCheckCircle className="active-icon" /> : <FaTimesCircle className="inactive-icon" />}
+            {user.isActive !== false ? (
+              <FaCheckCircle className="active-icon" />
+            ) : (
+              <FaTimesCircle className="inactive-icon" />
+            )}
           </div>
           <div className="detail-content">
             <span className="detail-label">Status</span>
-            <span className={`detail-value status-text ${user.isActive !== false ? 'active' : 'inactive'}`}>
-              {user.isActive !== false ? 'Active' : 'Inactive'}
+            <span
+              className={`detail-value status-text ${user.isActive !== false ? "active" : "inactive"}`}
+            >
+              {user.isActive !== false ? "Active" : "Inactive"}
             </span>
           </div>
         </div>
@@ -216,7 +242,9 @@ function UserDetails() {
       {/* ===== ORDERS SECTION - FIXED ===== */}
       <div className="user-orders-section">
         <div className="orders-header">
-          <h3><FaShoppingBag /> Order History</h3>
+          <h3>
+            <FaShoppingBag /> Order History
+          </h3>
           <span className="orders-count">{orders.length} orders</span>
         </div>
 
@@ -236,7 +264,9 @@ function UserDetails() {
             {orders.map((order) => (
               <div key={order._id} className="order-item">
                 <div className="order-item-header">
-                  <span className="order-id">Order #{order._id.slice(-8).toUpperCase()}</span>
+                  <span className="order-id">
+                    Order #{order._id.slice(-8).toUpperCase()}
+                  </span>
                   <span className={getStatusClass(order.orderStatus)}>
                     {getStatusIcon(order.orderStatus)}
                     {order.orderStatus}

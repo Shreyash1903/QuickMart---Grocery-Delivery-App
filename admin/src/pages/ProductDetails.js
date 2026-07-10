@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { getProductById, deleteProduct } from "../api/productsApi";
 import { FaArrowLeft, FaEdit, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "./ProductDetails.css";
@@ -16,8 +16,8 @@ function AdminProductDetails() {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await API.get(`/products/${id}`);
-        setProduct(res.data.product || res.data);
+        const res = await getProductById(id);
+        setProduct(res.product || res);
         setError("");
       } catch (err) {
         console.error("Error fetching product:", err);
@@ -34,10 +34,11 @@ function AdminProductDetails() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
-      await API.delete(`/products/${id}`);
+      await deleteProduct(id);
       toast.success("🗑️ Product deleted successfully!");
       navigate("/admin/products");
     } catch (err) {
@@ -45,7 +46,8 @@ function AdminProductDetails() {
     }
   };
 
-  const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+  const formatPrice = (value) =>
+    `₹${Number(value || 0).toLocaleString("en-IN")}`;
 
   if (loading) {
     return (
@@ -71,7 +73,10 @@ function AdminProductDetails() {
     <div className="admin-product-details-container">
       {/* ===== HEADER ===== */}
       <div className="admin-product-details-header">
-        <button className="back-btn" onClick={() => navigate("/admin/products")}>
+        <button
+          className="back-btn"
+          onClick={() => navigate("/admin/products")}
+        >
           <FaArrowLeft /> Back
         </button>
         <h1 className="page-title">Product Details</h1>
@@ -121,7 +126,9 @@ function AdminProductDetails() {
             {product.discountPrice && product.discountPrice < product.price && (
               <div className="info-row">
                 <span className="label">Discount Price</span>
-                <span className="value discount">{formatPrice(product.discountPrice)}</span>
+                <span className="value discount">
+                  {formatPrice(product.discountPrice)}
+                </span>
               </div>
             )}
             <div className="info-row">
@@ -130,14 +137,18 @@ function AdminProductDetails() {
             </div>
             <div className="info-row">
               <span className="label">Stock</span>
-              <span className={`value stock ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
-                {product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}
+              <span
+                className={`value stock ${product.stock > 0 ? "in-stock" : "out-of-stock"}`}
+              >
+                {product.stock > 0
+                  ? `${product.stock} in stock`
+                  : "Out of stock"}
               </span>
             </div>
             <div className="info-row">
               <span className="label">Status</span>
-              <span className={`value ${product.isNew ? 'new' : ''}`}>
-                {product.isNew ? '🆕 New' : 'Regular'}
+              <span className={`value ${product.isNew ? "new" : ""}`}>
+                {product.isNew ? "🆕 New" : "Regular"}
               </span>
             </div>
             {product.description && (

@@ -25,7 +25,7 @@ const log = {
 
 const createAdmin = async () => {
   try {
-    console.log("\n🚀 QuickCart - Admin Setup\n");
+    console.log("\n🚀 QuickMart - Admin Setup\n");
     log.divider();
 
     // ✅ DATABASE_URL use karein

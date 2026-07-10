@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import {
+  getAllOrders,
+  searchOrders,
+  deleteOrder,
+  updateOrderStatus,
+} from "../api/ordersApi";
 import {
   FaEye,
   FaTrash,
@@ -43,32 +48,34 @@ function Orders() {
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      
+
       const params = new URLSearchParams();
       params.append("page", currentPage);
       params.append("limit", 10);
 
-      let endpoint;
       let response;
 
       if (searchTerm && searchTerm.trim()) {
-        params.append("search", searchTerm.trim());
-        endpoint = `/orders/search?${params.toString()}`;
-        response = await API.get(endpoint);
+        response = await searchOrders({
+          search: searchTerm.trim(),
+          page: currentPage,
+          limit: 10,
+        });
       } else {
-        endpoint = `/orders?${params.toString()}`;
-        response = await API.get(endpoint);
+        response = await getAllOrders({
+          page: currentPage,
+          limit: 10,
+        });
       }
 
-      setOrders(response.data.orders || []);
-      setTotalOrders(response.data.totalOrders || 0);
-      setTotalPages(response.data.totalPages || 1);
+      setOrders(response.orders || []);
+      setTotalOrders(response.totalOrders || 0);
+      setTotalPages(response.totalPages || 1);
       setStats({
-        totalRevenue: response.data.stats?.totalRevenue || 0,
-        averageOrderValue: response.data.stats?.averageOrderValue || 0,
+        totalRevenue: response.stats?.totalRevenue || 0,
+        averageOrderValue: response.stats?.averageOrderValue || 0,
       });
       setError("");
-      
     } catch (err) {
       console.error("❌ Error fetching orders:", err);
       setError(err.response?.data?.message || "Failed to load orders");
@@ -93,7 +100,7 @@ function Orders() {
     if (!window.confirm("Are you sure you want to delete this order?")) return;
 
     try {
-      await API.delete(`/orders/${id}`);
+      await deleteOrder(id);
       toast.success("🗑️ Order deleted successfully!");
       fetchOrders();
     } catch (err) {
@@ -103,7 +110,7 @@ function Orders() {
 
   const handleStatusChange = async (id, newStatus) => {
     try {
-      await API.put(`/orders/${id}/status`, { orderStatus: newStatus });
+      await updateOrderStatus(id, newStatus);
       toast.success(`✅ Order status updated to ${newStatus}!`);
       fetchOrders();
     } catch (err) {
@@ -113,27 +120,34 @@ function Orders() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "Placed": return <FaClock className="status-icon placed" />;
-      case "Accepted": return <FaCheckCircle className="status-icon accepted" />;
-      case "Packed": return <FaBoxOpen className="status-icon packed" />;
-      case "Out for Delivery": return <FaTruck className="status-icon out-for-delivery" />;
-      case "Delivered": return <FaCheckCircle className="status-icon delivered" />;
-      case "Cancelled": return <FaTimesCircle className="status-icon cancelled" />;
-      default: return <FaBox className="status-icon" />;
+      case "Placed":
+        return <FaClock className="status-icon placed" />;
+      case "Accepted":
+        return <FaCheckCircle className="status-icon accepted" />;
+      case "Packed":
+        return <FaBoxOpen className="status-icon packed" />;
+      case "Out for Delivery":
+        return <FaTruck className="status-icon out-for-delivery" />;
+      case "Delivered":
+        return <FaCheckCircle className="status-icon delivered" />;
+      case "Cancelled":
+        return <FaTimesCircle className="status-icon cancelled" />;
+      default:
+        return <FaBox className="status-icon" />;
     }
   };
 
   const getStatusClass = (status) => {
-    return `status-badge status-${status.toLowerCase().replace(/\s+/g, '-')}`;
+    return `status-badge status-${status.toLowerCase().replace(/\s+/g, "-")}`;
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
@@ -182,7 +196,9 @@ function Orders() {
           </div>
           <div className="stat-info">
             <span className="stat-label">Total Revenue</span>
-            <span className="stat-value">{formatPrice(stats.totalRevenue)}</span>
+            <span className="stat-value">
+              {formatPrice(stats.totalRevenue)}
+            </span>
           </div>
         </div>
         <div className="stat-box">
@@ -191,7 +207,9 @@ function Orders() {
           </div>
           <div className="stat-info">
             <span className="stat-label">Average Order</span>
-            <span className="stat-value">{formatPrice(stats.averageOrderValue)}</span>
+            <span className="stat-value">
+              {formatPrice(stats.averageOrderValue)}
+            </span>
           </div>
         </div>
       </div>
@@ -221,7 +239,11 @@ function Orders() {
         <div className="orders-empty">
           <div className="empty-icon">📦</div>
           <h3>No orders found</h3>
-          <p>{searchTerm ? `No orders found for "${searchTerm}"` : "No orders available"}</p>
+          <p>
+            {searchTerm
+              ? `No orders found for "${searchTerm}"`
+              : "No orders available"}
+          </p>
         </div>
       ) : (
         <>
@@ -232,7 +254,9 @@ function Orders() {
                 <div className="order-card-header">
                   <div className="order-card-id">
                     <span className="order-id-label">Order #</span>
-                    <span className="order-id-value">{order._id.slice(-8).toUpperCase()}</span>
+                    <span className="order-id-value">
+                      {order._id.slice(-8).toUpperCase()}
+                    </span>
                   </div>
                   <span className={getStatusClass(order.orderStatus)}>
                     {getStatusIcon(order.orderStatus)}
@@ -260,17 +284,23 @@ function Orders() {
                     <div className="order-card-info">
                       <FaRupeeSign className="info-icon" />
                       <span className="info-label">Amount :</span>
-                      <span className="info-value amount">{formatPrice(order.totalAmount)}</span>
+                      <span className="info-value amount">
+                        {formatPrice(order.totalAmount)}
+                      </span>
                     </div>
                     <div className="order-card-info">
                       <FaBoxes className="info-icon" />
                       <span className="info-label">Items :</span>
-                      <span className="info-value">{order.items?.length || 0} items</span>
+                      <span className="info-value">
+                        {order.items?.length || 0} items
+                      </span>
                     </div>
                     <div className="order-card-info">
                       <FaCalendarAlt className="info-icon" />
                       <span className="info-label">Date :</span>
-                      <span className="info-value">{formatDate(order.createdAt)}</span>
+                      <span className="info-value">
+                        {formatDate(order.createdAt)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -280,7 +310,9 @@ function Orders() {
                   <select
                     className="status-select"
                     value={order.orderStatus}
-                    onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                    onChange={(e) =>
+                      handleStatusChange(order._id, e.target.value)
+                    }
                   >
                     <option value="Placed">Placed</option>
                     <option value="Accepted">Accepted</option>
@@ -336,7 +368,9 @@ function Orders() {
 
           {/* ===== FOOTER ===== */}
           <div className="orders-footer">
-            <span>Showing {orders.length} of {totalOrders} orders</span>
+            <span>
+              Showing {orders.length} of {totalOrders} orders
+            </span>
           </div>
         </>
       )}

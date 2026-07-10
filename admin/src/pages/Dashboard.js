@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { getDashboardStats } from "../api/ordersApi";
+import { getAllUsers } from "../api/usersApi";
 import {
   FaUsers,
   FaBoxOpen,
@@ -40,14 +41,12 @@ function Dashboard() {
   const fetchDashboard = async () => {
     try {
       setLoading(true);
-      const res = await API.get("/dashboard");
-      const payload = res?.data || {};
-
+      const data = await getDashboardStats();
       setStats({
-        totalUsers: payload.totalUsers ?? 0,
-        totalProducts: payload.totalProducts ?? 0,
-        totalOrders: payload.totalOrders ?? 0,
-        totalRevenue: payload.totalRevenue ?? 0,
+        totalUsers: data.totalUsers ?? 0,
+        totalProducts: data.totalProducts ?? 0,
+        totalOrders: data.totalOrders ?? 0,
+        totalRevenue: data.totalRevenue ?? 0,
       });
       setError("");
     } catch (error) {
@@ -61,17 +60,17 @@ function Dashboard() {
   // ✅ Fetch Recent Users
   const fetchRecentUsers = async () => {
     try {
-      const res = await API.get("/users?limit=5&sort=createdAt");
-      setRecentUsers(res.data.users || []);
+      const res = await getAllUsers({ limit: 5, page: 1 });
+      setRecentUsers(res.users || []);
     } catch (error) {
       console.error("Error fetching recent users:", error);
     }
   };
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -89,11 +88,11 @@ function Dashboard() {
     if (diffMins < 1) return "Just now";
     if (diffMins < 60) return `${diffMins} min ago`;
     if (diffHours < 24) return `${diffHours} hr ago`;
-    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
+    if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -110,7 +109,15 @@ function Dashboard() {
 
   // ✅ Get Random Color for Avatar
   const getAvatarColor = (name) => {
-    const colors = ['#4f46e5', '#0c831f', '#f59e0b', '#ec4899', '#06b6d4', '#8b5cf6', '#ef4444'];
+    const colors = [
+      "#4f46e5",
+      "#0c831f",
+      "#f59e0b",
+      "#ec4899",
+      "#06b6d4",
+      "#8b5cf6",
+      "#ef4444",
+    ];
     const index = name ? name.length % colors.length : 0;
     return colors[index];
   };
@@ -126,7 +133,7 @@ function Dashboard() {
       growth: "+12.5%",
       trend: "up",
       delay: "0s",
-      bg: "rgba(102, 126, 234, 0.08)"
+      bg: "rgba(102, 126, 234, 0.08)",
     },
     {
       id: 2,
@@ -138,7 +145,7 @@ function Dashboard() {
       growth: "+8.3%",
       trend: "up",
       delay: "0.1s",
-      bg: "rgba(240, 147, 251, 0.08)"
+      bg: "rgba(240, 147, 251, 0.08)",
     },
     {
       id: 3,
@@ -150,7 +157,7 @@ function Dashboard() {
       growth: "+5.7%",
       trend: "up",
       delay: "0.2s",
-      bg: "rgba(79, 172, 254, 0.08)"
+      bg: "rgba(79, 172, 254, 0.08)",
     },
     {
       id: 4,
@@ -162,8 +169,8 @@ function Dashboard() {
       growth: "+15.2%",
       trend: "up",
       delay: "0.3s",
-      bg: "rgba(67, 233, 123, 0.08)"
-    }
+      bg: "rgba(67, 233, 123, 0.08)",
+    },
   ];
 
   if (loading) {
@@ -207,11 +214,11 @@ function Dashboard() {
         <div className="header-right">
           <div className="date-badge">
             <FaCalendarAlt className="date-icon" />
-            {new Date().toLocaleDateString('en-US', { 
-              weekday: 'long', 
-              year: 'numeric', 
-              month: 'long', 
-              day: 'numeric' 
+            {new Date().toLocaleDateString("en-US", {
+              weekday: "long",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
             })}
           </div>
         </div>
@@ -232,35 +239,42 @@ function Dashboard() {
         {cardData.map((card) => {
           const Icon = card.icon;
           return (
-            <div 
+            <div
               key={card.id}
-              className={`stat-card ${animate ? 'slide-in' : ''}`}
-              style={{ '--delay': card.delay }}
+              className={`stat-card ${animate ? "slide-in" : ""}`}
+              style={{ "--delay": card.delay }}
             >
-              <div className="card-glow" style={{ background: card.gradient }}></div>
+              <div
+                className="card-glow"
+                style={{ background: card.gradient }}
+              ></div>
               <div className="card-content">
                 <div className="stat-header">
-                  <div className="stat-icon-wrapper" style={{ background: card.gradient }}>
+                  <div
+                    className="stat-icon-wrapper"
+                    style={{ background: card.gradient }}
+                  >
                     <Icon size={22} />
                   </div>
                   <div className={`trend-badge ${card.trend}`}>
-                    {card.trend === 'up' ? <FaArrowUp /> : <FaArrowDown />}
+                    {card.trend === "up" ? <FaArrowUp /> : <FaArrowDown />}
                     {card.growth}
                   </div>
                 </div>
                 <div className="stat-info">
                   <h3 className="stat-value">
-                    {typeof card.value === 'string' ? card.value : 
-                      new Intl.NumberFormat().format(card.value)}
+                    {typeof card.value === "string"
+                      ? card.value
+                      : new Intl.NumberFormat().format(card.value)}
                   </h3>
                   <p className="stat-label">{card.title}</p>
                 </div>
                 <div className="stat-progress">
-                  <div 
-                    className="progress-bar" 
-                    style={{ 
-                      width: `${Math.min((typeof card.value === 'number' ? card.value : 100) / 1000 * 100, 100)}%`,
-                      background: card.gradient 
+                  <div
+                    className="progress-bar"
+                    style={{
+                      width: `${Math.min(((typeof card.value === "number" ? card.value : 100) / 1000) * 100, 100)}%`,
+                      background: card.gradient,
                     }}
                   ></div>
                 </div>
@@ -282,19 +296,31 @@ function Dashboard() {
             <span className="section-subtitle">Get things done faster</span>
           </div>
           <div className="actions-grid">
-            <button className="action-btn add-product" onClick={() => navigate("/admin/add-product")}>
+            <button
+              className="action-btn add-product"
+              onClick={() => navigate("/admin/add-product")}
+            >
               <span className="btn-icon">➕</span>
               <span>Add Product</span>
             </button>
-            <button className="action-btn view-orders" onClick={() => navigate("/admin/orders")}>
+            <button
+              className="action-btn view-orders"
+              onClick={() => navigate("/admin/orders")}
+            >
               <span className="btn-icon">📦</span>
               <span>View Orders</span>
             </button>
-            <button className="action-btn manage-users" onClick={() => navigate("/admin/users")}>
+            <button
+              className="action-btn manage-users"
+              onClick={() => navigate("/admin/users")}
+            >
               <span className="btn-icon">👥</span>
               <span>Manage Users</span>
             </button>
-            <button className="action-btn generate-report" onClick={() => navigate("/admin/analytics")}>
+            <button
+              className="action-btn generate-report"
+              onClick={() => navigate("/admin/analytics")}
+            >
               <span className="btn-icon">📊</span>
               <span>Analytics</span>
             </button>
@@ -318,12 +344,15 @@ function Dashboard() {
             ) : (
               recentUsers.map((user) => (
                 <div key={user._id} className="activity-item">
-                  <div className="activity-avatar" style={{ background: getAvatarColor(user.name) }}>
+                  <div
+                    className="activity-avatar"
+                    style={{ background: getAvatarColor(user.name) }}
+                  >
                     {getInitials(user.name)}
                   </div>
                   <div className="activity-content">
                     <p className="activity-text">
-                      <strong>{user.name}</strong> 
+                      <strong>{user.name}</strong>
                       <span className="activity-email">{user.email}</span>
                     </p>
                     <span className="activity-time">
@@ -332,8 +361,12 @@ function Dashboard() {
                     </span>
                   </div>
                   <div className="activity-status">
-                    <span className={`status-dot ${user.isActive !== false ? 'active' : 'inactive'}`}></span>
-                    <span className="status-text">{user.isActive !== false ? 'Active' : 'Inactive'}</span>
+                    <span
+                      className={`status-dot ${user.isActive !== false ? "active" : "inactive"}`}
+                    ></span>
+                    <span className="status-text">
+                      {user.isActive !== false ? "Active" : "Inactive"}
+                    </span>
                   </div>
                 </div>
               ))

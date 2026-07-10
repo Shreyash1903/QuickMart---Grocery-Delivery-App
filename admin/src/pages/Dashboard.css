@@ -1108,3 +1108,314 @@
     font-size: 12px;
   }
 }
+
+/* ======================================== */
+/* ===== RESPONSIVE ===== */
+/* ======================================== */
+
+@media (max-width: 1024px) {
+  .dashboard-container {
+    padding: 20px 24px;
+  }
+
+  .dashboard-title {
+    font-size: 30px;
+  }
+
+  .dashboard-cards {
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+  }
+
+  .dashboard-bottom {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px 18px;
+  }
+
+  .dashboard-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .dashboard-title {
+    font-size: 26px;
+  }
+
+  .dashboard-subtitle {
+    font-size: 14px;
+  }
+
+  .date-badge {
+    padding: 8px 16px;
+    font-size: 13px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* ===== ✅ REDUCED CARD WIDTH ON TABLET ===== */
+  .dashboard-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .stat-card {
+    padding: 16px 18px;
+    border-radius: 16px;
+  }
+
+  .stat-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    font-size: 16px;
+  }
+
+  .stat-value {
+    font-size: 22px;
+  }
+
+  .stat-label {
+    font-size: 12px;
+  }
+
+  .trend-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .action-btn {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .orb-1, .orb-2, .orb-3, .orb-4 {
+    display: none;
+  }
+
+  .quick-actions,
+  .recent-activity {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px 12px 20px;
+  }
+
+  .dashboard-title {
+    font-size: 20px;
+  }
+
+  .greeting-badge {
+    font-size: 12px;
+    padding: 6px 14px;
+  }
+
+  .dashboard-subtitle {
+    font-size: 13px;
+  }
+
+  /* ===== ✅ EVEN SMALLER CARDS ON MOBILE ===== */
+  .dashboard-cards {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .stat-card {
+    padding: 14px 14px 12px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.06);
+  }
+
+  .card-glow {
+    display: none;
+  }
+
+  .stat-icon-wrapper {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 14px;
+  }
+
+  .stat-header {
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    color: #6b7280;
+  }
+
+  .stat-progress {
+    height: 2px;
+  }
+
+  .trend-badge {
+    font-size: 9px;
+    padding: 2px 8px;
+    gap: 2px;
+  }
+
+  .trend-badge svg {
+    font-size: 10px;
+  }
+
+  .date-badge {
+    padding: 6px 14px;
+    font-size: 12px;
+    border-radius: 8px;
+  }
+
+  .date-icon {
+    font-size: 13px;
+  }
+
+  .actions-grid {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .action-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+    border-radius: 10px;
+  }
+
+  .btn-icon {
+    font-size: 16px;
+  }
+
+  .header-right {
+    width: 100%;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .section-title {
+    font-size: 15px;
+  }
+
+  .section-subtitle {
+    font-size: 12px;
+  }
+
+  .quick-actions,
+  .recent-activity {
+    padding: 14px 16px;
+    border-radius: 14px;
+  }
+
+  .activity-item {
+    padding: 8px 10px;
+    border-radius: 8px;
+  }
+
+  .activity-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .activity-text {
+    font-size: 13px;
+  }
+
+  .activity-email {
+    font-size: 11px;
+  }
+
+  .activity-time {
+    font-size: 11px;
+  }
+
+  .activity-status {
+    gap: 4px;
+  }
+
+  .status-dot {
+    width: 6px;
+    height: 6px;
+  }
+
+  .status-text {
+    font-size: 10px;
+  }
+}
+
+/* ===== ✅ EXTRA SMALL PHONES (320px - 400px) ===== */
+@media (max-width: 400px) {
+  .dashboard-container {
+    padding: 10px 8px 16px;
+  }
+
+  .dashboard-cards {
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 12px 10px 10px;
+    border-radius: 12px;
+  }
+
+  .stat-icon-wrapper {
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
+    font-size: 12px;
+  }
+
+  .stat-value {
+    font-size: 16px;
+  }
+
+  .stat-label {
+    font-size: 10px;
+  }
+
+  .trend-badge {
+    font-size: 8px;
+    padding: 2px 6px;
+  }
+
+  .dashboard-title {
+    font-size: 18px;
+  }
+
+  .greeting-badge {
+    font-size: 11px;
+    padding: 4px 12px;
+  }
+
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+  }
+
+  .quick-actions,
+  .recent-activity {
+    padding: 12px 12px;
+  }
+}

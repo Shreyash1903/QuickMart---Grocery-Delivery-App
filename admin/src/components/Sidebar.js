@@ -8,32 +8,54 @@ import {
   FaUsers,
   FaChartLine,
   FaSignOutAlt,
+  FaBars,
 } from "react-icons/fa";
 import "./Sidebar.css";
 
 function Sidebar({ isOpen, toggleSidebar }) {
   const navigate = useNavigate();
 
+  // ✅ Close sidebar when any link is clicked
+  const handleLinkClick = () => {
+    if (isOpen) {
+      toggleSidebar();
+    }
+  };
+
   const handleLogout = () => {
-    // ✅ Clear admin token
+    // ✅ Clear only the admin session token
     localStorage.removeItem("adminToken");
-    localStorage.removeItem("token"); // Agar 'token' key use kar rahe ho toh
     
-    // ✅ Redirect to user frontend (port 3000)
-    window.location.href = "http://localhost:3000";
-    
-    // Optional: Close sidebar on logout
+    // ✅ Close sidebar
     if (isOpen) toggleSidebar();
+    
+    // ✅ Redirect to admin login
+    navigate("/login");
   };
 
   return (
     <>
-      {isOpen && <div className="sidebar-overlay" onClick={toggleSidebar}></div>}
-      
-      <div className={`sidebar ${isOpen ? 'sidebar-open' : ''}`}>
+      {/* Hamburger Icon - Always visible on mobile */}
+      <button 
+        className={`hamburger-btn ${isOpen ? "active" : ""}`} 
+        onClick={toggleSidebar}
+        aria-label="Toggle menu"
+      >
+        <FaBars />
+      </button>
+
+      {/* Overlay */}
+      {isOpen && (
+        <div className="sidebar-overlay" onClick={toggleSidebar}></div>
+      )}
+
+      {/* Sidebar */}
+      <div className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
         <div className="sidebar-brand">
           <span className="sidebar-brand-icon">🛒</span>
-          <span className="sidebar-brand-text">Quick<span>Cart</span></span>
+          <span className="sidebar-brand-text">
+            Quick<span>Mart</span>
+          </span>
           <span className="sidebar-brand-badge">Admin</span>
         </div>
 
@@ -42,27 +64,52 @@ function Sidebar({ isOpen, toggleSidebar }) {
         </div>
 
         <nav className="sidebar-nav">
-          <NavLink to="/admin" end className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin"
+            end
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaChartPie /> Dashboard
           </NavLink>
 
-          <NavLink to="/admin/products" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin/products"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaBoxOpen /> Products
           </NavLink>
 
-          <NavLink to="/admin/add-product" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin/add-product"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaPlusCircle /> Add Product
           </NavLink>
 
-          <NavLink to="/admin/orders" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin/orders"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaShoppingCart /> Orders
           </NavLink>
 
-          <NavLink to="/admin/users" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin/users"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaUsers /> Users
           </NavLink>
 
-          <NavLink to="/admin/analytics" className={({ isActive }) => isActive ? 'active' : ''}>
+          <NavLink
+            to="/admin/analytics"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}  // ✅ Close sidebar on click
+          >
             <FaChartLine /> Analytics
           </NavLink>
         </nav>

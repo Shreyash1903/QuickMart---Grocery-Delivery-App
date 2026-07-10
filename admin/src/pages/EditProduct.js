@@ -1,12 +1,16 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import API from "../api/adminApi";
+import {
+  getProductById,
+  updateProduct,
+  deleteProduct,
+} from "../api/productsApi";
 import { toast } from "react-toastify";
-import { 
-  FaArrowLeft, 
-  FaSave, 
-  FaImage, 
-  FaTrash, 
+import {
+  FaArrowLeft,
+  FaSave,
+  FaImage,
+  FaTrash,
   FaBox,
   FaTag,
   FaRupeeSign,
@@ -14,7 +18,7 @@ import {
   FaClipboardList,
   FaToggleOn,
   FaToggleOff,
-  FaHashtag
+  FaHashtag,
 } from "react-icons/fa";
 import "./EditProduct.css";
 
@@ -40,8 +44,8 @@ function EditProduct() {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await API.get(`/products/${id}`);
-        const product = res.data.product || res.data;
+        const res = await getProductById(id);
+        const product = res.product || res;
 
         setFormData({
           name: product.name || "",
@@ -91,7 +95,7 @@ function EditProduct() {
         return;
       }
 
-      await API.put(`/products/${id}`, {
+      await updateProduct(id, {
         name: formData.name,
         category: formData.category.trim(),
         price: Number(formData.price),
@@ -120,10 +124,11 @@ function EditProduct() {
 
   // ===== HANDLE DELETE =====
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
-      await API.delete(`/products/${id}`);
+      await deleteProduct(id);
       toast.success("🗑️ Product deleted successfully!", {
         position: "top-right",
       });
@@ -148,7 +153,10 @@ function EditProduct() {
     <div className="edit-product-container">
       {/* ===== HEADER ===== */}
       <div className="edit-product-header">
-        <button className="back-btn" onClick={() => navigate("/admin/products")}>
+        <button
+          className="back-btn"
+          onClick={() => navigate("/admin/products")}
+        >
           <FaArrowLeft /> Back to Products
         </button>
         <h1 className="edit-product-title">
@@ -324,9 +332,15 @@ function EditProduct() {
               <label className="toggle-label">
                 <span className="toggle-text">
                   {formData.isNew ? (
-                    <><FaToggleOn className="toggle-icon active" /> Mark as New Product</>
+                    <>
+                      <FaToggleOn className="toggle-icon active" /> Mark as New
+                      Product
+                    </>
                   ) : (
-                    <><FaToggleOff className="toggle-icon" /> Mark as New Product</>
+                    <>
+                      <FaToggleOff className="toggle-icon" /> Mark as New
+                      Product
+                    </>
                   )}
                 </span>
                 <input
@@ -338,8 +352,8 @@ function EditProduct() {
                 />
               </label>
               <small className="form-hint">
-                {formData.isNew 
-                  ? "✅ This product will be shown as 'New' on the store" 
+                {formData.isNew
+                  ? "✅ This product will be shown as 'New' on the store"
                   : "Toggle to mark this product as new"}
               </small>
             </div>
@@ -354,7 +368,9 @@ function EditProduct() {
                 </div>
                 <div className="preview-row">
                   <span className="preview-label">Category</span>
-                  <span className="preview-value">{formData.category || "—"}</span>
+                  <span className="preview-value">
+                    {formData.category || "—"}
+                  </span>
                 </div>
                 <div className="preview-row">
                   <span className="preview-label">Price</span>

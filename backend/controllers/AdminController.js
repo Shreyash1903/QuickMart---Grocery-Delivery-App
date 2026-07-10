@@ -4,7 +4,7 @@ import OrderModel from "../models/Order.js";
 import mongoose from "mongoose";
 
 class AdminController {
-  // Dashboard Statistics
+  // Dashboard Data
   static dashboard = async (req, res) => {
     try {
       // Total Users
@@ -40,7 +40,9 @@ class AdminController {
     }
   };
 
-  // ================= GET ALL PRODUCTS =================
+  // PRODUCT ROUTES
+
+  // Get All Products
   static getAllProducts = async (req, res) => {
     try {
       const products = await ProductModel.find().sort({
@@ -58,7 +60,7 @@ class AdminController {
     }
   };
 
-  // ================= GET SINGLE PRODUCT =================
+  // Get Single Product (for View)
   static getProductById = async (req, res) => {
     try {
       const { id } = req.params;
@@ -82,7 +84,7 @@ class AdminController {
     }
   };
 
-  // ================= SEARCH PRODUCTS (UPDATED) =================
+  // Search Products
   static searchProducts = async (req, res) => {
     try {
       const {
@@ -148,7 +150,7 @@ class AdminController {
     }
   };
 
-  // ================= SEARCH SUGGESTIONS =================
+  // Get Products Search Suggestions (Autocomplete)
   static getSearchSuggestions = async (req, res) => {
     try {
       const { q, limit = 8 } = req.query;
@@ -190,7 +192,7 @@ class AdminController {
     }
   };
 
-  // ================= ADD PRODUCT =================
+  // Add Product
   static addProduct = async (req, res) => {
     try {
       console.log("📦 Adding product...");
@@ -199,7 +201,7 @@ class AdminController {
 
       // ✅ Check if file was uploaded successfully
       let image = "https://via.placeholder.com/600x600?text=No+Image";
-      
+
       if (req.file) {
         // ✅ Cloudinary returns file path in req.file.path
         image = req.file.path;
@@ -256,10 +258,9 @@ class AdminController {
         message: "Product added successfully",
         product,
       });
-
     } catch (error) {
       console.error("❌ Error adding product:", error);
-      
+
       // ✅ Check if it's a Cloudinary error
       if (error.message.includes("Cloudinary")) {
         return res.status(500).json({
@@ -276,7 +277,7 @@ class AdminController {
     }
   };
 
-  // ================= UPDATE PRODUCT =================
+  // Update Product
   static updateProduct = async (req, res) => {
     try {
       const { id } = req.params;
@@ -302,7 +303,7 @@ class AdminController {
     }
   };
 
-  // ================= DELETE PRODUCT =================
+  // Delete Product
   static deleteProduct = async (req, res) => {
     try {
       const { id } = req.params;
@@ -324,7 +325,7 @@ class AdminController {
     }
   };
 
-  // ================= GET CATEGORIES =================
+  // Get Categories of Products
   static getCategories = async (req, res) => {
     try {
       const categories = await ProductModel.distinct("category");
@@ -339,10 +340,18 @@ class AdminController {
     }
   };
 
-  // ================= GET ALL USERS =================
+  // USERS ROUTES
+
+  // Get All Users
   static getAllUsers = async (req, res) => {
     try {
-      const { search, role, page = 1, limit = 20 } = req.query;
+      const {
+        search,
+        role,
+        sort = "createdAt",
+        page = 1,
+        limit = 20,
+      } = req.query;
 
       // Build filter
       let filter = {};
@@ -362,10 +371,11 @@ class AdminController {
 
       // Pagination
       const skip = (parseInt(page) - 1) * parseInt(limit);
+      const sortOrder = sort === "createdAt" ? -1 : 1;
 
       const users = await UserModel.find(filter)
         .select("-password -resetOTP -resetOTPExpire")
-        .sort({ createdAt: -1 })
+        .sort({ [sort]: sortOrder })
         .skip(skip)
         .limit(parseInt(limit));
 
@@ -385,7 +395,7 @@ class AdminController {
     }
   };
 
-  // ================= GET SINGLE USER =================
+  // Get Single User by ID
   static getUserById = async (req, res) => {
     try {
       const { id } = req.params;
@@ -411,7 +421,7 @@ class AdminController {
     }
   };
 
-  // ================= UPDATE USER =================
+  // Update User by ID
   static updateUser = async (req, res) => {
     try {
       const { id } = req.params;
@@ -441,7 +451,7 @@ class AdminController {
     }
   };
 
-  // ================= DELETE USER =================
+  // Delete User by ID
   static deleteUser = async (req, res) => {
     try {
       const { id } = req.params;
@@ -465,11 +475,9 @@ class AdminController {
     }
   };
 
-  // ========================================//
-  // ===== ORDERS (NEW) =====//
-  // ========================================//
+  // ORDERS ROUTES 
 
-  // ================= GET ALL ORDERS (FIXED SEARCH) =================
+  // Get All Orders
   static getAllOrders = async (req, res) => {
     try {
       const { status, startDate, endDate, page = 1, limit = 10 } = req.query;
@@ -489,7 +497,12 @@ class AdminController {
         filter.orderStatus = status;
       }
 
-      // 📅 Date range filter
+      // � Filter by user ID (when viewing a specific user's orders)
+      if (req.query.userId) {
+        filter.user = req.query.userId;
+      }
+
+      // �📅 Date range filter
       if (startDate || endDate) {
         filter.createdAt = {};
         if (startDate) {
@@ -584,7 +597,7 @@ class AdminController {
     }
   };
 
-  // ================= SEARCH ORDERS (FIXED) =================
+  // GET orders with search
   static searchOrders = async (req, res) => {
     try {
       const { search, page = 1, limit = 10 } = req.query;
@@ -690,7 +703,7 @@ class AdminController {
     }
   };
 
-  // ================= GET SINGLE ORDER =================
+  // Get Single Order by ID
   static getOrderById = async (req, res) => {
     try {
       const { id } = req.params;
@@ -698,7 +711,7 @@ class AdminController {
       const order = await OrderModel.findById(id)
         .populate("user", "name email")
         .populate("items.product", "name image price")
-        .populate("address");  // ✅ YEH LINE ADD KARO
+        .populate("address"); // ✅ YEH LINE ADD KARO
 
       if (!order) {
         return res.status(404).json({
@@ -722,7 +735,7 @@ class AdminController {
     }
   };
 
-  // ================= UPDATE ORDER STATUS =================
+  // Update Order Status
   static updateOrderStatus = async (req, res) => {
     try {
       const { id } = req.params;
@@ -767,7 +780,7 @@ class AdminController {
     }
   };
 
-  // ================= DELETE ORDER =================
+  // Delete Order by ID
   static deleteOrder = async (req, res) => {
     try {
       const { id } = req.params;

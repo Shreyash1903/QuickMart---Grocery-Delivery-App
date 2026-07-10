@@ -25,3 +25,189 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* ===== GLOBAL MOBILE RESPONSIVE HELPERS ===== */
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+button,
+input,
+textarea,
+select {
+  min-width: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) {
+  body {
+    font-size: 15px;
+  }
+
+  .dashboard-main-blinkit,
+  .cart-page-shell,
+  .checkout-page-shell,
+  .product-details-page,
+  .address-page,
+  .wishlist-page,
+  .orders-page,
+  .profile-page,
+  .register-wrapper,
+  .login-wrapper,
+  .forgot-wrapper,
+  .verify-wrapper,
+  .reset-wrapper {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero-banner,
+  .product-details-main,
+  .products-layout,
+  .checkout-grid,
+  .order-details-grid,
+  .cart-item-card {
+    gap: 20px;
+  }
+
+  .hero-banner {
+    padding: 40px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .hero-banner .banner-actions,
+  .products-header,
+  .checkout-page-header,
+  .cart-page-header,
+  .wishlist-header-left,
+  .orders-header-left {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .products-layout {
+    flex-direction: column;
+  }
+
+  .products-sidebar {
+    width: 100%;
+    position: relative;
+    top: auto;
+    max-height: none;
+  }
+
+  .search-bar {
+    width: 100%;
+  }
+
+  .fab-button {
+    bottom: 20px;
+    right: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .header-container {
+    padding: 0 14px;
+  }
+
+  .hero-banner {
+    padding: 28px 16px;
+  }
+
+  .hero-banner .banner-title {
+    font-size: 26px;
+  }
+
+  .hero-banner .banner-subtitle {
+    font-size: 14px;
+  }
+
+  .products-grid,
+  .featured-carousel,
+  .related-products-grid,
+  .categories-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .product-details-main {
+    grid-template-columns: 1fr;
+    padding: 24px;
+  }
+
+  .cart-item-card,
+  .checkout-cart-item,
+  .address-card,
+  .order-card {
+    grid-template-columns: 1fr;
+  }
+
+  .checkout-form-card,
+  .checkout-summary-card,
+  .products-sidebar {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+
+  .dashboard-main-blinkit,
+  .cart-page-shell,
+  .checkout-page-shell,
+  .product-details-page {
+    padding: 18px 12px 40px;
+  }
+
+  .hero-banner {
+    padding: 20px 12px;
+  }
+
+  .hero-banner .banner-title {
+    font-size: 22px;
+  }
+
+  .hero-banner .banner-actions {
+    gap: 10px;
+  }
+
+  .section-title,
+  .product-title,
+  .cart-page-header h1,
+  .checkout-page-header h1 {
+    font-size: 20px;
+  }
+
+  .product-card,
+  .cart-item-card,
+  .address-card,
+  .checkout-address-item,
+  .checkout-payment-item,
+  .login-card,
+  .register-card,
+  .forgot-card,
+  .verify-card,
+  .reset-card {
+    border-radius: 16px;
+  }
+
+  .search-bar input,
+  .input-wrapper input,
+  .login-input,
+  .register-input,
+  .forgot-input {
+    padding: 12px 14px;
+  }
+}

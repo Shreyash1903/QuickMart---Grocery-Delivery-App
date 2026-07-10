@@ -75,7 +75,7 @@ let transporter;
 // UserController class handles user-related operations such as registration, login, password reset, and fetching current user details.
 
 class UserController {
-  // ================= REGISTER =================
+  // Register a new user
   // Ye function new user ko register karta hai.
   // static - Ye method class ka object banaye bina call ho sakta hai.
   static createUser = async (req, res) => {
@@ -113,7 +113,8 @@ class UserController {
     }
   };
 
-  // ================= LOGIN =================
+  // Login user and generate JWT token
+  // Ye function user ko login karta hai aur JWT token generate karta hai.
   static verifyUser = async (req, res) => {
     try {
       const { email, password } = req.body; // Destructuring email and password from request body
@@ -163,7 +164,7 @@ class UserController {
     }
   };
 
-  // ================= GOOGLE LOGIN =================
+  // Google Login
   // static googleLogin = async (req, res) => {
   //   try {
   //     const { token } = req.body;
@@ -322,7 +323,7 @@ class UserController {
     }
   };
 
-  // ================= RESET PASSWORD =================
+  // Reset Password after OTP verification
   static userResetPassword = async (req, res) => {
     try {
       const { email, otp, password } = req.body; // Frontend se email, OTP aur new password receive hota hai.
@@ -354,7 +355,7 @@ class UserController {
     }
   };
 
-  // ================= GET CURRENT USER (/me) =================
+  // Get current logged-in user details
   static me = async (req, res) => {
     try {
       const userId = req.user.userId;
@@ -378,7 +379,7 @@ class UserController {
     }
   };
 
-  // ================= UPDATE PROFILE =================
+  // Update user profile
   static updateProfile = async (req, res) => {
     try {
       const userId = req.user.userId;
@@ -411,7 +412,7 @@ class UserController {
     }
   };
 
-  // ================= CHANGE PASSWORD =================
+  // Change user password
   static changePassword = async (req, res) => {
     try {
       const userId = req.user.userId;

@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { addProduct } from "../api/productsApi";
 import { toast } from "react-toastify";
-import { 
-  FaArrowLeft, 
-  FaSave, 
-  FaImage, 
-  FaUpload, 
+import {
+  FaArrowLeft,
+  FaSave,
+  FaImage,
+  FaUpload,
   FaTimes,
   FaBox,
   FaTag,
@@ -14,7 +14,7 @@ import {
   FaPercentage,
   FaClipboardList,
   FaToggleOn,
-  FaToggleOff
+  FaToggleOff,
 } from "react-icons/fa";
 import "./AddProduct.css";
 
@@ -51,7 +51,7 @@ function AddProduct() {
   };
 
   const processImageFile = (file) => {
-    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    const validTypes = ["image/jpeg", "image/png", "image/webp", "image/gif"];
     if (!validTypes.includes(file.type)) {
       toast.error("❌ Please upload a valid image (JPEG, PNG, WEBP, GIF)");
       return;
@@ -119,11 +119,7 @@ function AddProduct() {
         submitData.append("image", selectedImage);
       }
 
-      await API.post("/products", submitData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      await addProduct(submitData);
 
       toast.success("✅ Product added successfully!", {
         position: "top-right",
@@ -144,7 +140,10 @@ function AddProduct() {
     <div className="add-product-container">
       {/* ===== HEADER ===== */}
       <div className="add-product-header">
-        <button className="back-btn" onClick={() => navigate("/admin/products")}>
+        <button
+          className="back-btn"
+          onClick={() => navigate("/admin/products")}
+        >
           <FaArrowLeft /> Back to Products
         </button>
         <h1 className="add-product-title">
@@ -290,7 +289,7 @@ function AddProduct() {
                 <FaImage className="input-icon" />
                 Product Image
               </label>
-              
+
               <div className="image-upload">
                 <input
                   type="file"
@@ -304,8 +303,8 @@ function AddProduct() {
                   <FaUpload /> Choose Image
                 </label>
 
-                <div 
-                  className={`image-preview ${imagePreview ? 'has-image' : ''} ${isDragging ? 'drag-over' : ''}`}
+                <div
+                  className={`image-preview ${imagePreview ? "has-image" : ""} ${isDragging ? "drag-over" : ""}`}
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onDrop={handleDrop}
@@ -313,7 +312,7 @@ function AddProduct() {
                   {imagePreview ? (
                     <>
                       <img src={imagePreview} alt="Product preview" />
-                      <button 
+                      <button
                         type="button"
                         className="remove-image-btn"
                         onClick={handleRemoveImage}
@@ -337,7 +336,7 @@ function AddProduct() {
                     <span className="file-size">
                       {(selectedImage?.size / 1024).toFixed(1)} KB
                     </span>
-                    <button 
+                    <button
                       type="button"
                       className="remove-image-btn small"
                       onClick={handleRemoveImage}
@@ -354,9 +353,15 @@ function AddProduct() {
               <label className="toggle-label">
                 <span className="toggle-text">
                   {formData.isNew ? (
-                    <><FaToggleOn className="toggle-icon active" /> Mark as New Product</>
+                    <>
+                      <FaToggleOn className="toggle-icon active" /> Mark as New
+                      Product
+                    </>
                   ) : (
-                    <><FaToggleOff className="toggle-icon" /> Mark as New Product</>
+                    <>
+                      <FaToggleOff className="toggle-icon" /> Mark as New
+                      Product
+                    </>
                   )}
                 </span>
                 <input
@@ -368,8 +373,8 @@ function AddProduct() {
                 />
               </label>
               <small className="form-hint">
-                {formData.isNew 
-                  ? "✅ This product will be shown as 'New' on the store" 
+                {formData.isNew
+                  ? "✅ This product will be shown as 'New' on the store"
                   : "Toggle to mark this product as new"}
               </small>
             </div>
@@ -384,7 +389,9 @@ function AddProduct() {
                 </div>
                 <div className="preview-row">
                   <span className="preview-label">Category</span>
-                  <span className="preview-value">{formData.category || "—"}</span>
+                  <span className="preview-value">
+                    {formData.category || "—"}
+                  </span>
                 </div>
                 <div className="preview-row">
                   <span className="preview-label">Price</span>

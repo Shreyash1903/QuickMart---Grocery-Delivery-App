@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import { getAllUsers, deleteUser } from "../api/usersApi";
 import {
   FaSearch,
   FaEdit,
@@ -35,10 +35,14 @@ function Users() {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const res = await API.get(`/users?search=${searchTerm}&page=${currentPage}&limit=10`);
-      setUsers(res.data.users || []);
-      setTotalUsers(res.data.totalUsers || 0);
-      setTotalPages(res.data.totalPages || 1);
+      const res = await getAllUsers({
+        search: searchTerm,
+        page: currentPage,
+        limit: 10,
+      });
+      setUsers(res.users || []);
+      setTotalUsers(res.totalUsers || 0);
+      setTotalPages(res.totalPages || 1);
       setError("");
     } catch (err) {
       console.error("Error fetching users:", err);
@@ -53,7 +57,7 @@ function Users() {
     if (!window.confirm("Are you sure you want to delete this user?")) return;
 
     try {
-      await API.delete(`/users/${id}`);
+      await deleteUser(id);
       toast.success("🗑️ User deleted successfully!");
       fetchUsers();
     } catch (err) {
@@ -62,10 +66,10 @@ function Users() {
   };
 
   const formatDate = (date) => {
-    return new Date(date).toLocaleDateString('en-IN', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
+    return new Date(date).toLocaleDateString("en-IN", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
     });
   };
 
@@ -80,9 +84,9 @@ function Users() {
   };
 
   const getAvatarColor = (name) => {
-    const colors = ['', 'green', 'orange', 'pink', 'cyan', 'purple'];
+    const colors = ["", "green", "orange", "pink", "cyan", "purple"];
     const index = name ? name.length % colors.length : 0;
-    return colors[index] || '';
+    return colors[index] || "";
   };
 
   if (loading && users.length === 0) {
@@ -121,7 +125,10 @@ function Users() {
               onChange={(e) => setSearchTerm(e.target.value)}
             />
             {searchTerm && (
-              <button className="clear-search" onClick={() => setSearchTerm("")}>
+              <button
+                className="clear-search"
+                onClick={() => setSearchTerm("")}
+              >
                 ✕
               </button>
             )}
@@ -134,7 +141,11 @@ function Users() {
         <div className="users-empty">
           <div className="empty-icon">👤</div>
           <h3>No users found</h3>
-          <p>{searchTerm ? `No results found for "${searchTerm}"` : "No users registered yet"}</p>
+          <p>
+            {searchTerm
+              ? `No results found for "${searchTerm}"`
+              : "No users registered yet"}
+          </p>
         </div>
       ) : (
         <>
@@ -144,14 +155,16 @@ function Users() {
                 {/* ===== CARD HEADER ===== */}
                 <div className="user-card-header">
                   <div className="user-card-avatar-wrapper">
-                    <div className={`user-card-avatar ${getAvatarColor(user.name)}`}>
+                    <div
+                      className={`user-card-avatar ${getAvatarColor(user.name)}`}
+                    >
                       {getInitials(user.name)}
                     </div>
                   </div>
                   <div className="user-card-header-info">
                     <h3 className="user-card-name">{user.name}</h3>
                     <span className="user-card-role">
-                      {user.role === 'admin' ? (
+                      {user.role === "admin" ? (
                         <>
                           <FaShieldAlt className="role-icon" />
                           <span className="role-badge admin">Admin</span>
@@ -161,11 +174,17 @@ function Users() {
                       )}
                     </span>
                   </div>
-                  <span className={`user-card-status ${user.isActive !== false ? 'active' : 'inactive'}`}>
+                  <span
+                    className={`user-card-status ${user.isActive !== false ? "active" : "inactive"}`}
+                  >
                     {user.isActive !== false ? (
-                      <><FaUserCheck /> Active</>
+                      <>
+                        <FaUserCheck /> Active
+                      </>
                     ) : (
-                      <><FaUserTimes /> Inactive</>
+                      <>
+                        <FaUserTimes /> Inactive
+                      </>
                     )}
                   </span>
                 </div>
@@ -178,7 +197,9 @@ function Users() {
                   </div>
                   <div className="user-card-info-item">
                     <FaCalendarAlt className="info-icon" />
-                    <span className="info-text">Joined {formatDate(user.createdAt)}</span>
+                    <span className="info-text">
+                      Joined {formatDate(user.createdAt)}
+                    </span>
                   </div>
                 </div>
 
@@ -234,7 +255,9 @@ function Users() {
           )}
 
           <div className="users-footer">
-            <span>Showing {users.length} of {totalUsers} users</span>
+            <span>
+              Showing {users.length} of {totalUsers} users
+            </span>
           </div>
         </>
       )}

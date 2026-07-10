@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import API from "../api/adminApi";
+import {
+  getAllProducts,
+  searchProducts,
+  getSearchSuggestions,
+  getCategories,
+  deleteProduct,
+} from "../api/productsApi";
 import {
   FaEdit,
   FaTrash,
@@ -36,7 +42,7 @@ function Products() {
   const fetchProducts = useCallback(async (search = "", category = "all") => {
     try {
       setLoading(true);
-      
+
       const params = new URLSearchParams();
       if (search && search.trim()) {
         params.append("q", search.trim());
@@ -44,13 +50,21 @@ function Products() {
       if (category && category !== "all") {
         params.append("category", category);
       }
-      
-      const queryString = params.toString();
-      const url = queryString ? `/products/search?${queryString}` : "/products";
-      
-      const res = await API.get(url);
-      setProducts(res.data.products || []);
-      setTotalProducts(res.data.totalProducts || 0);
+
+      let res;
+      if (search && search.trim()) {
+        res = await searchProducts({
+          q: search.trim(),
+          category,
+        });
+      } else if (category && category !== "all") {
+        res = await searchProducts({ category });
+      } else {
+        res = await getAllProducts();
+      }
+
+      setProducts(res.products || []);
+      setTotalProducts(res.totalProducts || 0);
       setError("");
     } catch (err) {
       console.error("Error fetching products:", err);
@@ -71,9 +85,12 @@ function Products() {
 
     try {
       setSuggestionLoading(true);
-      const res = await API.get(`/products/suggestions?q=${encodeURIComponent(query.trim())}&limit=8`);
-      setSuggestions(res.data.suggestions || []);
-      setShowSuggestions(res.data.suggestions.length > 0);
+      const res = await getSearchSuggestions({
+        q: query.trim(),
+        limit: 8,
+      });
+      setSuggestions(res.suggestions || []);
+      setShowSuggestions((res.suggestions || []).length > 0);
     } catch (error) {
       console.error("Suggestion error:", error);
       setSuggestions([]);
@@ -91,8 +108,8 @@ function Products() {
   // ===== FETCH CATEGORIES =====
   const fetchCategories = async () => {
     try {
-      const res = await API.get("/categories");
-      setCategories(res.data.categories || []);
+      const res = await getCategories();
+      setCategories(res.categories || []);
     } catch (err) {
       console.error("Error fetching categories:", err);
     }
@@ -121,7 +138,10 @@ function Products() {
   // ===== CLICK OUTSIDE SUGGESTIONS =====
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (suggestionRef.current && !suggestionRef.current.contains(event.target)) {
+      if (
+        suggestionRef.current &&
+        !suggestionRef.current.contains(event.target)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -160,10 +180,11 @@ function Products() {
 
   // ===== DELETE PRODUCT =====
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this product?")) return;
+    if (!window.confirm("Are you sure you want to delete this product?"))
+      return;
 
     try {
-      await API.delete(`/products/${id}`);
+      await deleteProduct(id);
       toast.success("🗑️ Product deleted successfully!");
       fetchProducts(searchTerm, selectedCategory);
     } catch (err) {
@@ -195,7 +216,10 @@ function Products() {
           </h1>
           <span className="products-count">{totalProducts} products</span>
         </div>
-        <button className="add-product-btn" onClick={() => navigate("/admin/add-product")}>
+        <button
+          className="add-product-btn"
+          onClick={() => navigate("/admin/add-product")}
+        >
           <FaPlus /> Add Product
         </button>
       </div>
@@ -218,7 +242,11 @@ function Products() {
               autoComplete="off"
             />
             {searchTerm && (
-              <button type="button" className="clear-search-btn" onClick={clearSearch}>
+              <button
+                type="button"
+                className="clear-search-btn"
+                onClick={clearSearch}
+              >
                 <FaTimes />
               </button>
             )}
@@ -234,7 +262,9 @@ function Products() {
             <div className="suggestions-dropdown" ref={suggestionRef}>
               <div className="suggestions-header">
                 <span>Suggestions</span>
-                <span className="suggestions-count">{suggestions.length} results</span>
+                <span className="suggestions-count">
+                  {suggestions.length} results
+                </span>
               </div>
               {suggestions.map((product) => (
                 <div
@@ -243,7 +273,11 @@ function Products() {
                   onClick={() => handleSuggestionClick(product)}
                 >
                   {product.image ? (
-                    <img src={product.image} alt={product.name} className="suggestion-image" />
+                    <img
+                      src={product.image}
+                      alt={product.name}
+                      className="suggestion-image"
+                    />
                   ) : (
                     <div className="suggestion-image-placeholder">
                       <FaImage />
@@ -251,7 +285,9 @@ function Products() {
                   )}
                   <div className="suggestion-info">
                     <span className="suggestion-name">{product.name}</span>
-                    <span className="suggestion-category">{product.category}</span>
+                    <span className="suggestion-category">
+                      {product.category}
+                    </span>
                   </div>
                   <span className="suggestion-price">
                     {formatPrice(product.discountPrice || product.price)}
@@ -259,10 +295,12 @@ function Products() {
                 </div>
               ))}
               <div className="suggestions-footer">
-                <button onClick={() => {
-                  setShowSuggestions(false);
-                  fetchProducts(searchTerm, selectedCategory);
-                }}>
+                <button
+                  onClick={() => {
+                    setShowSuggestions(false);
+                    fetchProducts(searchTerm, selectedCategory);
+                  }}
+                >
                   <FaSearch /> Search for "{searchTerm}"
                 </button>
               </div>
@@ -277,7 +315,9 @@ function Products() {
         >
           <option value="all">All Categories</option>
           {categories.map((cat) => (
-            <option key={cat} value={cat}>{cat}</option>
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
           ))}
         </select>
       </div>
@@ -286,11 +326,11 @@ function Products() {
       {products.length === 0 ? (
         <div className="products-empty">
           <div className="empty-icon">📦</div>
-          <h3>{searchTerm ? 'No products found' : 'No products yet'}</h3>
+          <h3>{searchTerm ? "No products found" : "No products yet"}</h3>
           <p>
-            {searchTerm 
-              ? `No results found for "${searchTerm}"` 
-              : 'Add your first product to get started.'}
+            {searchTerm
+              ? `No results found for "${searchTerm}"`
+              : "Add your first product to get started."}
           </p>
           {searchTerm && (
             <button className="clear-search-btn large" onClick={clearSearch}>
@@ -298,7 +338,10 @@ function Products() {
             </button>
           )}
           {!searchTerm && (
-            <button className="add-product-btn" onClick={() => navigate("/admin/add-product")}>
+            <button
+              className="add-product-btn"
+              onClick={() => navigate("/admin/add-product")}
+            >
               <FaPlus /> Add Product
             </button>
           )}
@@ -317,8 +360,10 @@ function Products() {
                   </div>
                 )}
                 {/* Stock Badge */}
-                <span className={`product-card-stock ${product.stock > 0 ? 'in-stock' : 'out-of-stock'}`}>
-                  {product.stock > 0 ? `${product.stock}` : '0'}
+                <span
+                  className={`product-card-stock ${product.stock > 0 ? "in-stock" : "out-of-stock"}`}
+                >
+                  {product.stock > 0 ? `${product.stock}` : "0"}
                 </span>
               </div>
 
@@ -335,12 +380,15 @@ function Products() {
                 </div>
 
                 <div className="product-card-pricing">
-                  <span className="product-card-price">{formatPrice(product.price)}</span>
-                  {product.discountPrice && product.discountPrice < product.price && (
-                    <span className="product-card-discount-price">
-                      {formatPrice(product.discountPrice)}
-                    </span>
-                  )}
+                  <span className="product-card-price">
+                    {formatPrice(product.price)}
+                  </span>
+                  {product.discountPrice &&
+                    product.discountPrice < product.price && (
+                      <span className="product-card-discount-price">
+                        {formatPrice(product.discountPrice)}
+                      </span>
+                    )}
                 </div>
 
                 {/* ✅ Quantity Display */}
@@ -363,7 +411,9 @@ function Products() {
                     </button>
                     <button
                       className="action-btn edit-btn"
-                      onClick={() => navigate(`/admin/edit-product/${product._id}`)}
+                      onClick={() =>
+                        navigate(`/admin/edit-product/${product._id}`)
+                      }
                       title="Edit"
                     >
                       <FaEdit />

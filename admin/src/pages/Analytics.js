@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import API from "../api/adminApi";
+import { getDashboardStats } from "../api/ordersApi";
 import {
   FaRupeeSign,
   FaShoppingCart,
@@ -52,9 +52,27 @@ function Analytics() {
   const fetchAnalytics = async () => {
     try {
       setLoading(true);
-      const res = await API.get("/analytics");
-      setAnalytics(res.data);
-      setError(""); // ✅ Add this
+      const data = await getDashboardStats();
+      setAnalytics((prev) => ({
+        ...prev,
+        revenue: {
+          ...prev.revenue,
+          total: data.totalRevenue || 0,
+        },
+        orders: {
+          ...prev.orders,
+          total: data.totalOrders || 0,
+        },
+        users: {
+          ...prev.users,
+          total: data.totalUsers || 0,
+        },
+        products: {
+          ...prev.products,
+          total: data.totalProducts || 0,
+        },
+      }));
+      setError("");
     } catch (err) {
       console.error("Error fetching analytics:", err);
       setError("Failed to load analytics"); // ✅ Add this
@@ -65,9 +83,9 @@ function Analytics() {
   };
 
   const formatCurrency = (value) => {
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(value);
@@ -90,14 +108,18 @@ function Analytics() {
           <h1 className="analytics-title">
             <i className="bi bi-graph-up-arrow"></i> Analytics
           </h1>
-          <span className="analytics-subtitle">Track your business performance</span>
+          <span className="analytics-subtitle">
+            Track your business performance
+          </span>
         </div>
         <div className="analytics-header-right">
           <div className="date-filter">
             <FaCalendarAlt className="filter-icon" />
             <select className="filter-select">
               <option value="7">Last 7 Days</option>
-              <option value="30" selected>Last 30 Days</option>
+              <option value="30" selected>
+                Last 30 Days
+              </option>
               <option value="90">Last 90 Days</option>
               <option value="365">Last Year</option>
             </select>
@@ -115,12 +137,17 @@ function Analytics() {
       {/* ===== SUMMARY CARDS ===== */}
       <div className="analytics-summary">
         <div className="summary-card revenue">
-          <div className="summary-icon" style={{ background: "linear-gradient(135deg, #f6d365, #fda085)" }}>
+          <div
+            className="summary-icon"
+            style={{ background: "linear-gradient(135deg, #f6d365, #fda085)" }}
+          >
             <FaRupeeSign />
           </div>
           <div className="summary-info">
             <span className="summary-label">Total Revenue</span>
-            <span className="summary-value">{formatCurrency(analytics.revenue.total)}</span>
+            <span className="summary-value">
+              {formatCurrency(analytics.revenue.total)}
+            </span>
             <span className="summary-growth up">
               <FaArrowUp /> +15.2%
             </span>
@@ -128,7 +155,10 @@ function Analytics() {
         </div>
 
         <div className="summary-card orders">
-          <div className="summary-icon" style={{ background: "linear-gradient(135deg, #4facfe, #00f2fe)" }}>
+          <div
+            className="summary-icon"
+            style={{ background: "linear-gradient(135deg, #4facfe, #00f2fe)" }}
+          >
             <FaShoppingCart />
           </div>
           <div className="summary-info">
@@ -141,7 +171,10 @@ function Analytics() {
         </div>
 
         <div className="summary-card users">
-          <div className="summary-icon" style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)" }}>
+          <div
+            className="summary-icon"
+            style={{ background: "linear-gradient(135deg, #f093fb, #f5576c)" }}
+          >
             <FaUsers />
           </div>
           <div className="summary-info">
@@ -154,7 +187,10 @@ function Analytics() {
         </div>
 
         <div className="summary-card products">
-          <div className="summary-icon" style={{ background: "linear-gradient(135deg, #43e97b, #38f9d7)" }}>
+          <div
+            className="summary-icon"
+            style={{ background: "linear-gradient(135deg, #43e97b, #38f9d7)" }}
+          >
             <FaBoxOpen />
           </div>
           <div className="summary-info">
@@ -171,21 +207,23 @@ function Analytics() {
       <div className="analytics-grid">
         <div className="analytics-card chart-card">
           <div className="card-header">
-            <h3><FaChartLine /> Revenue Trend</h3>
+            <h3>
+              <FaChartLine /> Revenue Trend
+            </h3>
             <span className="card-subtitle">Last 30 days</span>
           </div>
           <div className="chart-placeholder">
             <div className="chart-bars">
               {[...Array(12)].map((_, i) => (
                 <div key={i} className="chart-bar-wrapper">
-                  <div 
-                    className="chart-bar" 
-                    style={{ 
+                  <div
+                    className="chart-bar"
+                    style={{
                       height: `${20 + Math.random() * 60}%`,
-                      animationDelay: `${i * 0.05}s`
+                      animationDelay: `${i * 0.05}s`,
                     }}
                   ></div>
-                  <span className="chart-label">W{i+1}</span>
+                  <span className="chart-label">W{i + 1}</span>
                 </div>
               ))}
             </div>
@@ -199,7 +237,9 @@ function Analytics() {
           <div className="stats-grid">
             <div className="stat-item">
               <span className="stat-label">Avg Order Value</span>
-              <span className="stat-value">{formatCurrency(analytics.orders.average)}</span>
+              <span className="stat-value">
+                {formatCurrency(analytics.orders.average)}
+              </span>
             </div>
             <div className="stat-item">
               <span className="stat-label">New Users (Today)</span>
@@ -211,7 +251,9 @@ function Analytics() {
             </div>
             <div className="stat-item">
               <span className="stat-label">Categories</span>
-              <span className="stat-value">{analytics.products.categories}</span>
+              <span className="stat-value">
+                {analytics.products.categories}
+              </span>
             </div>
           </div>
         </div>

@@ -81,7 +81,7 @@ function Home({ user, getUserData }) {
   // ✅ Category Click Handler - Store category and check login
   const handleCategoryClick = (categoryName) => {
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       // ✅ User not logged in - Store category and show login
       setPendingCategory(categoryName);
@@ -123,31 +123,18 @@ function Home({ user, getUserData }) {
     fetchHome();
   }, []);
 
-  // ✅ Handle login success - Redirect to category if pending
+  // ✅ Handle login success - Redirect to category if pending or default product page
   const handleLoginSuccess = (user, token) => {
     getUserData();
 
-    if (user?.role === "admin") {
-      const adminBaseUrl =
-        process.env.REACT_APP_ADMIN_URL ||
-        "http://localhost:3001";
-      const normalizedAdminUrl = adminBaseUrl.endsWith("/admin")
-        ? adminBaseUrl
-        : `${adminBaseUrl.replace(/\/$/, "")}/admin`;
-
-      window.location.href = token
-        ? `${normalizedAdminUrl}?token=${encodeURIComponent(token)}`
-        : normalizedAdminUrl;
-    } else {
-      // ✅ Check if there's a pending category
-      if (pendingCategory) {
-        const category = pendingCategory;
-        setPendingCategory(null); // Clear pending category
-        navigate(`/products?category=${encodeURIComponent(category)}`);
-      } else {
-        navigate("/products");
-      }
+    if (pendingCategory) {
+      const category = pendingCategory;
+      setPendingCategory(null); // Clear pending category
+      navigate(`/products?category=${encodeURIComponent(category)}`);
+      return;
     }
+
+    navigate("/products");
   };
 
   // Enhanced loading with shimmer effect
@@ -294,7 +281,10 @@ function Home({ user, getUserData }) {
             <h2 className="section-title">
               <span className="title-underline">Categories</span>
             </h2>
-            <button className="view-all-btn" onClick={() => navigate("/products")}>
+            <button
+              className="view-all-btn"
+              onClick={() => navigate("/products")}
+            >
               View All <i className="bi bi-arrow-right"></i>
             </button>
           </div>
