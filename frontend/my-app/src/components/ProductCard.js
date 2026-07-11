@@ -188,7 +188,7 @@ function ProductCard({ product, initialWishlisted = false, onWishlistChange }) {
 
   // Format price
   const formatPrice = (value) =>
-    `₹${Number(value || 0).toLocaleString("en-IN")}`;
+    `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
   // Calculate discount
   const discountPercentage =

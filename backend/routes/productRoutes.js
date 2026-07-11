@@ -16,6 +16,9 @@ router.post("/add", ProductController.addProduct);
 router.get("/", ProductController.getallProducts);
 
 // Get Products by Category 
+// :category is a route parameter (dynamic value)
+// Example URL : http://localhost:5000/api/products/category/Fruits%20%26%20Vegetables
+// (Your browser should actually encode spaces and & as %20 and %26.)
 router.get("/category/:category", ProductController.getCategoryProducts);
 
 // Search Products ( Full Search )

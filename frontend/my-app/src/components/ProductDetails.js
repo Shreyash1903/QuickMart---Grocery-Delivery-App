@@ -5,7 +5,7 @@ import { getProductById, getCategoryProducts } from "../api/product";
 import { addToCart, updateQuantity, removeItem, getCart } from "../api/cart";
 import "./productDetails.css";
 
-const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+const formatPrice = (value) => `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
 function ProductDetails() {
   const { id } = useParams();
@@ -300,7 +300,7 @@ function ProductDetails() {
                 <i className="bi bi-truck"></i>
                 <div>
                   <strong>Free Delivery</strong>
-                  <span>On orders above ₹500</span>
+                  <span>On orders above ₹ 500</span>
                 </div>
               </div>
               <div className="feature-item">

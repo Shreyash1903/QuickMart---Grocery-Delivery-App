@@ -4,7 +4,7 @@ import { cancelOrder, getOrderById } from "../api/orders";
 import { toast } from "react-toastify";
 import "./orderDetails.css";
 
-const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+const formatPrice = (value) => `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
 function OrderDetails() {
   const navigate = useNavigate();
@@ -233,22 +233,24 @@ function OrderDetails() {
             <h2>
               <i className="bi bi-list-ul"></i> Order Items
             </h2>
-            <div className="order-details-items">
+            <div className="order-details-items-grid">
               {order.items.map((item) => (
-                <div key={item.product} className="order-details-item">
+                <div key={item.product} className="order-details-item-card">
                   <img 
-                    src={item.image || 'https://via.placeholder.com/72x72/f0f0f0/666?text=Product'} 
+                    src={item.image || 'https://via.placeholder.com/64x64/f0f0f0/666?text=Product'} 
                     alt={item.name} 
+                    className="item-card-img"
                   />
-                  <div className="item-details">
-                    <h3>{item.name}</h3>
-                    <p>
-                      <span className="item-qty">Qty {item.quantity}</span>
-                      <span className="item-price">· {formatPrice(item.price)} each</span>
-                    </p>
-                    <span className="item-subtotal">
-                      Subtotal: {formatPrice(item.price * item.quantity)}
-                    </span>
+                  <div className="item-card-details">
+                    <h3 className="item-card-name">{item.name}</h3>
+                    <div className="item-card-meta">
+                      <span className="item-card-qty">Qty {item.quantity}</span>
+                      <span className="item-card-price">{formatPrice(item.price)} each</span>
+                    </div>
+                    <div className="item-card-subtotal">
+                      <span className="subtotal-label">Subtotal</span>
+                      <span className="subtotal-amount">{formatPrice(item.price * item.quantity)}</span>
+                    </div>
                   </div>
                 </div>
               ))}

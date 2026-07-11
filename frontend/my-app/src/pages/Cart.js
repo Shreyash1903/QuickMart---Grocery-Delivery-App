@@ -134,7 +134,7 @@ function Cart() {
           <div className="empty-cart-icon">🛒</div>
           <h2>Your cart is empty</h2>
           <p>Looks like you haven't added anything to your cart yet.</p>
-          <p className="empty-subtext">Explore our products and start shopping!</p>
+          <p className="empty-subtext">Explore our products and start shopping !</p>
           <button
             className="cart-action-btn explore-btn"
             onClick={() => navigate("/products")}
@@ -179,8 +179,8 @@ function Cart() {
         <div className="clear-confirm-overlay">
           <div className="clear-confirm-modal">
             <div className="clear-confirm-icon">⚠️</div>
-            <h3>Clear Cart?</h3>
-            <p>Are you sure you want to remove all items from your cart?</p>
+            <h3>Clear Cart ?</h3>
+            <p>Are you sure you want to remove all items from your cart ?</p>
             <div className="clear-confirm-actions">
               <button 
                 className="clear-confirm-cancel"

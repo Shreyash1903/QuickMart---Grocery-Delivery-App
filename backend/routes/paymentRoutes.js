@@ -5,8 +5,8 @@ import PaymentController from "../controllers/paymentController.js";
 const router = express.Router();
 
 // Protected Routes
-
 // Create Razorpay Order
+// The frontend calls this API when the user clicks "Pay Now".
 router.post("/create-order", verifyToken, PaymentController.createOrder);
 
 // Verify Razorpay Payment

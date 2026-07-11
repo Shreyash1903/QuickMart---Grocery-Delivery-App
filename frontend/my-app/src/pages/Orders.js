@@ -4,7 +4,7 @@ import { cancelOrder, getMyOrders } from "../api/orders";
 import { toast } from "react-toastify";
 import "./orders.css";
 
-const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+const formatPrice = (value) => `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
 function Orders() {
   const navigate = useNavigate();
@@ -239,21 +239,28 @@ function Orders() {
               {/* ===== ORDER ITEMS ===== */}
               <div className="order-items-list">
                 {order.items.map((item) => (
-                  <div key={item.product} className="order-item-row">
-                    <img 
-                      src={item.image || 'https://via.placeholder.com/64x64/f0f0f0/666?text=Product'} 
-                      alt={item.name} 
-                    />
-                    <div className="order-item-info">
-                      <h3>{item.name}</h3>
-                      <p>
-                        <span className="item-qty">Qty {item.quantity}</span>
-                        <span className="item-price">· {formatPrice(item.price)} each</span>
-                      </p>
+                  <div key={item.product} className="order-item-card">
+                    <div className="order-item-left">
+                      <img 
+                        src={item.image || 'https://via.placeholder.com/56x56/f0f0f0/666?text=Product'} 
+                        alt={item.name} 
+                        className="order-item-img"
+                      />
+                      <div className="order-item-details">
+                        <h4 className="order-item-name">{item.name}</h4>
+                        <div className="order-item-meta">
+                          <span className="item-qty-badge">
+                            <i className="bi bi-cart"></i> Qty {item.quantity}
+                          </span>
+                          <span className="item-price-badge">
+                            <i className="bi bi-tag"></i> {formatPrice(item.price)} each
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="order-item-total">
+                    <div className="order-item-right">
                       <span className="item-total-label">Total</span>
-                      <span className="item-total-price">{formatPrice(item.price * item.quantity)}</span>
+                      <span className="item-total-amount">{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   </div>
                 ))}

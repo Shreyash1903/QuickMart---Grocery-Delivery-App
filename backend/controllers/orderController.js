@@ -4,10 +4,11 @@ import AddressModel from "../models/Address.js";
 
 class OrderController {
     // Place an Order
+    // This controller does everything related to creating an order.
     static placeOrder = async (req, res) => {
         try {
-            const userId = req.user.userId;
-            const { addressId, paymentMethod } = req.body;
+            const userId = req.user.userId; // Gets user ID
+            const { addressId, paymentMethod } = req.body; // Gets address ID and payment method from the frontend
 
             // Find user's cart
             const cart = await CartModel.findOne({ user: userId })
@@ -26,6 +27,7 @@ class OrderController {
                 user: userId
             });
 
+            // If the address is not found, return an error response.
             if (!address) {
                 return res.status(404).json({
                     success: false,
@@ -50,7 +52,8 @@ class OrderController {
                 items: orderItems,
                 address: address._id,
                 totalAmount: cart.totalPrice,
-                paymentMethod: paymentMethod || "Cash on Delivery"
+                paymentMethod: paymentMethod || "Cash on Delivery",
+                paymentStatus: paymentMethod === "Online" ? "Paid" : "Pending"
             });
 
             await order.save();

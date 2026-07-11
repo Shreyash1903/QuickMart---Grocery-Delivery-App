@@ -1,14 +1,32 @@
+// useState → Stores data (cart, addresses, payment method, etc.).
+// useEffect → Runs code when the page loads.
+// useMemo → Computes derived values (total items) efficiently.
 import React, { useEffect, useMemo, useState } from "react";
+
+// useNavigate → Allows navigation to different pages (cart, address, orders).
 import { useNavigate } from "react-router-dom";
+
+// Calls the backend API to fetch all saved addresses.
 import { getAddresses } from "../api/address";
+
+// Calls the backend API to fetch cart data and notify when cart is updated.
 import { getCart, notifyCartUpdated } from "../api/cart";
+
+// Calls the backend to create the order.
 import { placeOrder } from "../api/orders";
+
+// These are your Razorpay APIs.
+// POST /payment/create-order - Creates a Razorpay Order.
+// POST /payment/verify-payment - Verifies the Razorpay Payment.
 import { createOrder, verifyPayment } from "../api/payment";
 import { toast } from "react-toastify";
 import "./checkout.css";
 
-const formatPrice = (value) => `₹${Number(value || 0).toLocaleString("en-IN")}`;
+// Formats a number into Indian Rupees format (e.g., ₹ 1,234.00).
+const formatPrice = (value) => `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
+// This function dynamically loads the Razorpay SDK script into the page.
+// Download: https://checkout.razorpay.com/v1/checkout.js
 const loadRazorpayScript = () =>
   new Promise((resolve) => {
     if (window.Razorpay) {
@@ -17,22 +35,23 @@ const loadRazorpayScript = () =>
     }
 
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";// Load Razorpay SDK from their CDN
     script.async = true;
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
     document.body.appendChild(script);
   });
 
+// Checkout Page Component
 function Checkout() {
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // It is used to move from one page to another.
   const [addresses, setAddresses] = useState([]);
   const [cart, setCart] = useState({ items: [], totalPrice: 0 });
   const [selectedAddressId, setSelectedAddressId] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
+  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery"); // Stores which payment option is selected.
   const [loading, setLoading] = useState(true);
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false); // Used while placing the order.
+  const [error, setError] = useState(""); // Stores error messages.
 
   const loadCheckoutData = async () => {
     try {
@@ -68,6 +87,7 @@ function Checkout() {
     }
   };
 
+  // This runs when the Checkout page opens.
   useEffect(() => {
     loadCheckoutData();
   }, []);
@@ -77,29 +97,45 @@ function Checkout() {
     [cart.items],
   );
 
+  // This function creates the order after everything is ready.
+  // It is used by both: Cash on Delivery and Online Payment
+  // This function does not care whether the "payment is COD" or "Online.""
+  // It only needs selectedPaymentMethod
+  // If - finalizeOrder("Cash on Delivery")
+  // ↓
+  // Order saved as COD.
+  // If - finalizeOrder("Online")
+  // ↓
+  // Order saved as Online Payment.
+  // So this same function is reused for both payment methods.
+
   const finalizeOrder = async (selectedPaymentMethod) => {
-    await placeOrder({
-      addressId: selectedAddressId,
-      paymentMethod: selectedPaymentMethod,
+    await placeOrder({ // Calls the backend API to place the order.
+      addressId: selectedAddressId, // Sends the selected address ID.
+      paymentMethod: selectedPaymentMethod, // Sends the selected payment method (Cash on Delivery or Online).
     });
 
-    notifyCartUpdated();
+    // After placing the order, it clears the cart and notifies other parts of the app that the cart has been updated.
+    notifyCartUpdated();// 
     
     // ✅ Success Toast
-    toast.success("🎉 Order placed successfully!", {
+    toast.success("🎉 Order placed successfully!", { 
       position: "top-right",
       autoClose: 4000,
     });
     
+    // After placing the order, it navigates to the Orders page.
     navigate("/orders", { replace: true });
   };
 
+  // This function is called only when the user selects "Online Payment" and clicks "Pay & Place Order"
   const handleOnlinePayment = async () => {
-    const scriptLoaded = await loadRazorpayScript();
+    const scriptLoaded = await loadRazorpayScript(); // Load Razorpay SDK script dynamically
 
-    if (!scriptLoaded) {
+    // If the Razorpay SDK script fails to load, it shows an error message and stops the payment process.
+    if (!scriptLoaded) { // If Razorpay SDK couldn't load,
       const errorMsg = "Razorpay SDK failed to load. Please try again.";
-      setError(errorMsg);
+      setError(errorMsg); // stores the error.
       toast.error(`❌ ${errorMsg}`, {
         position: "top-right",
         autoClose: 4000,
@@ -107,6 +143,7 @@ function Checkout() {
       return;
     }
 
+    // If the Razorpay key is not configured in the frontend environment, it shows an error message and stops the payment process.
     if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
       const errorMsg = "Razorpay key is not configured in the frontend environment.";
       setError(errorMsg);
@@ -117,25 +154,31 @@ function Checkout() {
       return;
     }
 
+    // Get Amount in Rupees from the cart. If cart.totalPrice is undefined, it defaults to 0.
     const amountInRupees = cart.totalPrice || 0;
 
     try {
-      setSubmitting(true);
-      setError("");
+      setSubmitting(true); // Button becomes Opening Payment...
+      setError(""); // Clears previous errors.
 
+      // Create Razorpay Order by calling the backend API. The backend will create an order in Razorpay and return the order details.
+      // POST /payment/create-order
+      // orderData will contain the Razorpay order details.
       const orderData = await createOrder(amountInRupees);
 
+      // This object tells Razorpay how to open the payment window.
       const options = {
-        key: process.env.REACT_APP_RAZORPAY_KEY_ID,
-        amount: orderData.order.amount,
-        currency: orderData.order.currency,
-        name: "Login Registration Authentication",
-        description: "Online order payment",
-        order_id: orderData.order.id,
+        key: process.env.REACT_APP_RAZORPAY_KEY_ID, // Your Razorpay Key ID
+        amount: orderData.order.amount, // Amount in paise (₹1 = 100 paise)
+        currency: orderData.order.currency, // Currency = Indian Rupees
+        name: "QuickMart", // Your company or product name
+        description: "Online order payment", // Description of the payment
+        order_id: orderData.order.id, // Razorpay Order ID returned from the backend
         handler: async (response) => {
           try {
-            await verifyPayment(response);
+            await verifyPayment(response); // Verify the payment by calling the backend API. The backend will verify the payment signature with Razorpay.
 
+            // This runs only if the payment is verified successfully. It finalizes the order as "Online Payment."
             await finalizeOrder("Online", {
               razorpayOrderId: response.razorpay_order_id,
               razorpayPaymentId: response.razorpay_payment_id,
@@ -169,8 +212,9 @@ function Checkout() {
         },
       };
 
+      // This creates the Razorpay Checkout instance using the options you prepared.
       const razorpay = new window.Razorpay(options);
-      razorpay.on("payment.failed", () => {
+      razorpay.on("payment.failed", () => { // If the payment fails, it shows an error message.
         const errorMsg = "Payment failed. Please try again.";
         setError(errorMsg);
         toast.error(`❌ ${errorMsg}`, {
@@ -179,7 +223,7 @@ function Checkout() {
         });
         setSubmitting(false);
       });
-      razorpay.open();
+      razorpay.open(); // Opens the Razorpay payment window for the user to complete the payment.
     } catch (err) {
       setSubmitting(false);
       const errorMsg = err.response?.data?.message || "Failed to start payment";
@@ -191,6 +235,7 @@ function Checkout() {
     }
   };
 
+  // This function runs first when the user clicks "Place Order" or "Pay & Place Order"
   const handlePlaceOrder = async (event) => {
     event.preventDefault();
 
@@ -204,15 +249,18 @@ function Checkout() {
       return;
     }
 
+    // If the user selects "Online Payment," it calls the handleOnlinePayment function to start the Razorpay payment process.
+    // Condition becomes false if the user selects "Cash on Delivery," so it skips handleOnlinePayment().
     if (paymentMethod === "Online") {
       await handleOnlinePayment();
       return;
     }
 
     try {
-      setSubmitting(true);
-      setError("");
+      setSubmitting(true); // Button becomes Placing Order...
+      setError(""); // Clears previous errors.
 
+      // If the user selects "Cash on Delivery," it directly finalizes the order without going through Razorpay.
       await finalizeOrder("Cash on Delivery");
     } catch (err) {
       const errorMsg = err.response?.data?.message || "Failed to place order";
@@ -289,14 +337,16 @@ function Checkout() {
           </div>
 
           {!addresses.length ? (
-            <div className="checkout-empty-inline">
-              <p>No saved addresses found.</p>
+            <div className="checkout-empty-address">
+              <div className="empty-address-icon">📍</div>
+              <h3>No Delivery Address Found</h3>
+              <p>Please add a delivery address to place your order</p>
               <button
                 type="button"
-                className="checkout-secondary-btn"
+                className="add-address-primary-btn"
                 onClick={() => navigate("/address")}
               >
-                Add Address
+                <i className="bi bi-plus-circle"></i> Add New Address
               </button>
             </div>
           ) : (
