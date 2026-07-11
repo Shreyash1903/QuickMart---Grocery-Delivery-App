@@ -16,6 +16,8 @@ import OrderDetails from "./pages/OrderDetails";
 import UserDetails from "./pages/UserDetails";
 import EditUser from "./pages/EditUser";
 import AdminLogin from "./pages/AdminLogin";
+import AdminProfile from "./pages/AdminProfile";
+import EditAdminProfile from "./pages/EditAdminProfile";
 import "./App.css";
 
 function App() {
@@ -129,6 +131,10 @@ function App() {
             <Route path="users" element={<Users />} />
             <Route path="users/:id" element={<UserDetails />} />
             <Route path="edit-user/:id" element={<EditUser />} />
+
+            {/* Profile */}
+            <Route path="profile" element={<AdminProfile />} />
+            <Route path="edit-profile" element={<EditAdminProfile />} />
 
             {/* Analytics */}
             <Route path="analytics" element={<Analytics />} />

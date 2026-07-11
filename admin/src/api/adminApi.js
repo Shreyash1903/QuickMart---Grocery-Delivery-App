@@ -7,21 +7,20 @@ const API = axios.create({
 
 // ✅ Add token only if it's NOT a login request
 API.interceptors.request.use((config) => {
-  // Skip token for login endpoint
   if (config.url === "/login") {
-    console.log("🔓 Login endpoint - skipping token");
     return config;
   }
 
   const token = localStorage.getItem("adminToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("📤 Sending request with admin token");
-  } else {
-    console.log("⚠️ No adminToken found!");
   }
 
   return config;
 });
+
+export const getAdminProfile = () => API.get("/profile");
+export const updateAdminProfile = (data) => API.put("/profile", data);
+export const changeAdminPassword = (data) => API.put("/profile/password", data);
 
 export default API;

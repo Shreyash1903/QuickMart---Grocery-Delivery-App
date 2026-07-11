@@ -2,6 +2,7 @@ import UserModel from "../models/User.js";
 import ProductModel from "../models/Product.js";
 import OrderModel from "../models/Order.js";
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 class AdminController {
   // Dashboard Data
@@ -475,7 +476,7 @@ class AdminController {
     }
   };
 
-  // ORDERS ROUTES 
+  // ORDERS ROUTES
 
   // Get All Orders
   static getAllOrders = async (req, res) => {
@@ -809,6 +810,157 @@ class AdminController {
       console.error("Error deleting order:", error);
       res.status(500).json({
         message: "Error deleting order",
+      });
+    }
+  };
+
+  // ADMIN PROFILE ROUTES
+
+  // ===== GET ADMIN PROFILE =====
+  static getAdminProfile = async (req, res) => {
+    try {
+      const adminId = req.user?.userId;
+
+      const admin = await UserModel.findById(adminId).select("-password");
+
+      if (!admin) {
+        return res.status(404).json({
+          success: false,
+          message: "Admin not found",
+        });
+      }
+
+      if (admin.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied. Admin only.",
+        });
+      }
+
+      res.status(200).json({
+        success: true,
+        user: admin,
+      });
+    } catch (error) {
+      console.error("❌ Error fetching admin profile:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to fetch admin profile",
+        error: error.message,
+      });
+    }
+  };
+
+  // ===== UPDATE ADMIN PROFILE =====
+  static updateAdminProfile = async (req, res) => {
+    try {
+      const adminId = req.user?.userId;
+      const { name, email } = req.body;
+
+      const admin = await UserModel.findById(adminId);
+
+      if (!admin) {
+        return res.status(404).json({
+          success: false,
+          message: "Admin not found",
+        });
+      }
+
+      if (admin.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied. Admin only.",
+        });
+      }
+
+      if (email && email !== admin.email) {
+        const existingUser = await UserModel.findOne({
+          email: email.toLowerCase().trim(),
+        });
+        if (existingUser) {
+          return res.status(400).json({
+            success: false,
+            message: "Email already in use",
+          });
+        }
+      }
+
+      if (name) admin.name = name;
+      if (email) admin.email = email.toLowerCase().trim();
+
+      await admin.save();
+
+      const updatedAdmin =
+        await UserModel.findById(adminId).select("-password");
+
+      res.status(200).json({
+        success: true,
+        message: "Profile updated successfully",
+        user: updatedAdmin,
+      });
+    } catch (error) {
+      console.error("❌ Error updating admin profile:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to update admin profile",
+        error: error.message,
+      });
+    }
+  };
+
+  // ===== CHANGE ADMIN PASSWORD =====
+  static changeAdminPassword = async (req, res) => {
+    try {
+      const adminId = req.user?.userId;
+      const { currentPassword, newPassword } = req.body;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({
+          success: false,
+          message: "Current password and new password are required",
+        });
+      }
+
+      const admin = await UserModel.findById(adminId);
+
+      if (!admin) {
+        return res.status(404).json({
+          success: false,
+          message: "Admin not found",
+        });
+      }
+
+      if (admin.role !== "admin") {
+        return res.status(403).json({
+          success: false,
+          message: "Access denied. Admin only.",
+        });
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        currentPassword,
+        admin.password,
+      );
+      if (!isPasswordValid) {
+        return res.status(401).json({
+          success: false,
+          message: "Current password is incorrect",
+        });
+      }
+
+      admin.password = newPassword;
+      await admin.save();
+
+      res.status(200).json({
+        success: true,
+        message: "Password changed successfully",
+      });
+    } catch (error) {
+      console.error("❌ Error changing admin password:", error);
+      res.status(500).json({
+        success: false,
+        message: "Failed to change password",
+        error: error.message,
       });
     }
   };

@@ -152,7 +152,7 @@ function Orders() {
   };
 
   const formatPrice = (value) => {
-    return `₹${Number(value || 0).toLocaleString("en-IN")}`;
+    return `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
   };
 
   if (loading && orders.length === 0) {
@@ -308,18 +308,18 @@ function Orders() {
                 {/* ===== CARD FOOTER ===== */}
                 <div className="order-card-footer">
                   <select
-                    className="status-select"
-                    value={order.orderStatus}
-                    onChange={(e) =>
-                      handleStatusChange(order._id, e.target.value)
-                    }
-                  >
-                    <option value="Placed">Placed</option>
-                    <option value="Accepted">Accepted</option>
-                    <option value="Packed">Packed</option>
-                    <option value="Out for Delivery">Out for Delivery</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
+  className="status-select"
+  value={order.orderStatus}
+  onChange={(e) => handleStatusChange(order._id, e.target.value)}
+  // This forces the dropdown to open downward
+  dropdown="down"
+>
+  <option value="Placed">Placed</option>
+  <option value="Accepted">Accepted</option>
+  <option value="Packed">Packed</option>
+  <option value="Out for Delivery">Out for Delivery</option>
+  <option value="Delivered">Delivered</option>
+  <option value="Cancelled">Cancelled</option>
                   </select>
 
                   <div className="order-card-actions">

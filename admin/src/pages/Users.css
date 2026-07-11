@@ -4,7 +4,7 @@
 
 .users-container {
   padding: 28px 32px;
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   min-height: 100vh;
   background: linear-gradient(135deg, #f0f4f8 0%, #e8ecf1 100%);
@@ -105,7 +105,7 @@
 
 .users-search {
   margin-bottom: 24px;
-  max-width: 400px;
+  max-width: 358px;
 }
 
 .search-box-wrapper {
@@ -166,14 +166,13 @@
 }
 
 /* ======================================== */
-/* ===== USER CARDS GRID ===== */
+/* ===== USER CARDS GRID - 3 IN A ROW ===== */
 /* ======================================== */
 
 .users-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
-  max-width: 820px;
 }
 
 /* ===== USER CARD ===== */
@@ -184,6 +183,8 @@
   overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
 }
 
 .user-card:hover {
@@ -307,6 +308,7 @@
   display: flex;
   flex-direction: column;
   gap: 10px;
+  flex: 1;
 }
 
 .user-card-info-item {
@@ -401,6 +403,7 @@
   border-radius: 16px;
   border: 2px dashed #e2e8f0;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  grid-column: 1 / -1;
 }
 
 .empty-icon {
@@ -492,14 +495,23 @@
 /* ===== RESPONSIVE ===== */
 /* ======================================== */
 
-@media (max-width: 1024px) {
+/* 3 cards in a row on large screens */
+@media (max-width: 1200px) {
   .users-grid {
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 18px;
-    max-width: 100%;
   }
 }
 
+/* 2 cards in a row on medium screens */
+@media (max-width: 992px) {
+  .users-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+  }
+}
+
+/* 1 card in a row on small screens */
 @media (max-width: 768px) {
   .users-container {
     padding: 16px;
@@ -529,9 +541,8 @@
   }
 
   .users-grid {
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 16px;
-    max-width: 100%;
+    grid-template-columns: 1fr;
+    gap: 14px;
   }
 
   .user-card-header {
@@ -540,6 +551,16 @@
 
   .user-card-status {
     margin-left: auto;
+  }
+
+  .user-card-footer {
+    flex-direction: column;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px;
   }
 }
 
@@ -555,7 +576,6 @@
   .users-grid {
     grid-template-columns: 1fr;
     gap: 12px;
-    max-width: 100%;
   }
 
   .user-card {
@@ -606,5 +626,46 @@
   .user-card-status {
     font-size: 10px;
     padding: 3px 10px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .users-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .user-card-header {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .user-card-avatar {
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .user-card-name {
+    font-size: 13px;
+  }
+
+  .user-card-body {
+    padding: 10px 12px;
+  }
+
+  .user-card-footer {
+    padding: 10px 12px 14px;
+  }
+
+  .action-btn {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .user-card-status {
+    font-size: 9px;
+    padding: 2px 8px;
   }
 }

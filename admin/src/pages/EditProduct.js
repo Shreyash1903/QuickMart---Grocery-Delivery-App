@@ -375,10 +375,10 @@ function EditProduct() {
                 <div className="preview-row">
                   <span className="preview-label">Price</span>
                   <span className="preview-value">
-                    {formData.price ? `₹${formData.price}` : "—"}
+                    {formData.price ? `₹ ${formData.price}` : "—"}
                     {formData.discountPrice && (
                       <span className="preview-discount">
-                        ₹{formData.discountPrice}
+                        ₹ {formData.discountPrice}
                       </span>
                     )}
                   </span>

@@ -15,38 +15,71 @@
   box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== HAMBURGER BUTTON ===== */
+/* ===== HAMBURGER BUTTON - LIGHTER BACKGROUND ===== */
 .hamburger-btn {
   display: none;
   position: fixed;
   top: 20px;
   left: 20px;
   z-index: 1001;
-  width: 46px;
-  height: 46px;
-  background: #1a1e26;
-  border: none;
-  border-radius: 12px;
-  color: #fff;
-  font-size: 22px;
+  width: 40px;
+  height: 40px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   align-items: center;
   justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  padding: 10px 8px;
+  backdrop-filter: blur(8px);
 }
 
 .hamburger-btn:hover {
-  background: #2d343f;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
   transform: scale(1.05);
 }
 
 .hamburger-btn.active {
-  background: #0c831f;
+  background: rgba(12, 131, 31, 0.2);
+  border-color: rgba(12, 131, 31, 0.3);
 }
 
 .hamburger-btn.active:hover {
-  background: #0a6e1a;
+  background: rgba(12, 131, 31, 0.3);
+}
+
+/* Clean hamburger lines using CSS */
+.hamburger-line {
+  display: block;
+  width: 22px;
+  height: 2.5px;
+  background: #ffffff;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+  transform-origin: center;
+  flex-shrink: 0;
+  opacity: 0.9;
+}
+
+/* Animated hamburger to X when active */
+.hamburger-btn.active .hamburger-line:nth-child(1) {
+  transform: translateY(7.5px) rotate(45deg);
+  width: 22px;
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(2) {
+  opacity: 0;
+  transform: scaleX(0);
+}
+
+.hamburger-btn.active .hamburger-line:nth-child(3) {
+  transform: translateY(-7.5px) rotate(-45deg);
+  width: 22px;
 }
 
 /* ===== BRAND ===== */
@@ -271,9 +304,26 @@
   .hamburger-btn {
     top: 16px;
     left: 16px;
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
+    width: 36px;
+    height: 36px;
+    padding: 8px 6px;
+    gap: 4px;
+    border-radius: 8px;
+  }
+
+  .hamburger-line {
+    width: 18px;
+    height: 2px;
+  }
+
+  .hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+    width: 18px;
+  }
+
+  .hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+    width: 18px;
   }
 
   .sidebar-brand-text {
@@ -291,6 +341,34 @@
 
   .sidebar-nav a svg {
     font-size: 16px;
+  }
+}
+
+/* Extra small screens */
+@media (max-width: 360px) {
+  .hamburger-btn {
+    top: 12px;
+    left: 12px;
+    width: 32px;
+    height: 32px;
+    padding: 6px 5px;
+    gap: 3px;
+    border-radius: 6px;
+  }
+
+  .hamburger-line {
+    width: 16px;
+    height: 2px;
+  }
+
+  .hamburger-btn.active .hamburger-line:nth-child(1) {
+    transform: translateY(5px) rotate(45deg);
+    width: 16px;
+  }
+
+  .hamburger-btn.active .hamburger-line:nth-child(3) {
+    transform: translateY(-5px) rotate(-45deg);
+    width: 16px;
   }
 }
 

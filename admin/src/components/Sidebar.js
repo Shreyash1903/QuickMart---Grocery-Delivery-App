@@ -9,6 +9,7 @@ import {
   FaChartLine,
   FaSignOutAlt,
   FaBars,
+  FaUserCircle,
 } from "react-icons/fa";
 import "./Sidebar.css";
 
@@ -25,10 +26,10 @@ function Sidebar({ isOpen, toggleSidebar }) {
   const handleLogout = () => {
     // ✅ Clear only the admin session token
     localStorage.removeItem("adminToken");
-    
+
     // ✅ Close sidebar
     if (isOpen) toggleSidebar();
-    
+
     // ✅ Redirect to admin login
     navigate("/login");
   };
@@ -36,8 +37,8 @@ function Sidebar({ isOpen, toggleSidebar }) {
   return (
     <>
       {/* Hamburger Icon - Always visible on mobile */}
-      <button 
-        className={`hamburger-btn ${isOpen ? "active" : ""}`} 
+      <button
+        className={`hamburger-btn ${isOpen ? "active" : ""}`}
         onClick={toggleSidebar}
         aria-label="Toggle menu"
       >
@@ -68,7 +69,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
             to="/admin"
             end
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaChartPie /> Dashboard
           </NavLink>
@@ -76,7 +77,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/admin/products"
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaBoxOpen /> Products
           </NavLink>
@@ -84,7 +85,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/admin/add-product"
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaPlusCircle /> Add Product
           </NavLink>
@@ -92,7 +93,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/admin/orders"
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaShoppingCart /> Orders
           </NavLink>
@@ -100,7 +101,7 @@ function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/admin/users"
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaUsers /> Users
           </NavLink>
@@ -108,9 +109,17 @@ function Sidebar({ isOpen, toggleSidebar }) {
           <NavLink
             to="/admin/analytics"
             className={({ isActive }) => (isActive ? "active" : "")}
-            onClick={handleLinkClick}  // ✅ Close sidebar on click
+            onClick={handleLinkClick} // ✅ Close sidebar on click
           >
             <FaChartLine /> Analytics
+          </NavLink>
+
+          <NavLink
+            to="/admin/profile"
+            className={({ isActive }) => (isActive ? "active" : "")}
+            onClick={handleLinkClick}
+          >
+            <FaUserCircle /> Profile
           </NavLink>
         </nav>
 

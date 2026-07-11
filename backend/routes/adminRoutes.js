@@ -13,33 +13,83 @@ router.post("/login", UserController.verifyUser);
 // Dashboard Data
 router.get("/dashboard", AdminController.dashboard);
 
+// Admin profile routes
+router.get("/profile", verifyToken, adminAuth, AdminController.getAdminProfile);
+router.put(
+  "/profile",
+  verifyToken,
+  adminAuth,
+  AdminController.updateAdminProfile,
+);
+router.put(
+  "/profile/password",
+  verifyToken,
+  adminAuth,
+  AdminController.changeAdminPassword,
+);
 // ===== PRODUCT ROUTES=====
 
 // ✅ SPECIFIC ROUTES PEHLE (Search, Suggestions)
 // Search Products
-router.get("/products/search",verifyToken,adminAuth,AdminController.searchProducts);
+router.get(
+  "/products/search",
+  verifyToken,
+  adminAuth,
+  AdminController.searchProducts,
+);
 
 // Get Products Search Suggestions (Autocomplete)
-router.get("/products/suggestions",verifyToken,adminAuth,AdminController.getSearchSuggestions);
+router.get(
+  "/products/suggestions",
+  verifyToken,
+  adminAuth,
+  AdminController.getSearchSuggestions,
+);
 
 // Get All Products
 router.get("/products", verifyToken, adminAuth, AdminController.getAllProducts);
 
 // ✅ DYNAMIC ROUTES BAAD MEIN (/:id wale)
 // Get Single Product (for View)
-router.get("/products/:id",verifyToken,adminAuth,AdminController.getProductById);
+router.get(
+  "/products/:id",
+  verifyToken,
+  adminAuth,
+  AdminController.getProductById,
+);
 
 // Add Product
-router.post("/products",verifyToken,adminAuth,upload.single("image"),AdminController.addProduct);
+router.post(
+  "/products",
+  verifyToken,
+  adminAuth,
+  upload.single("image"),
+  AdminController.addProduct,
+);
 
 // Update Product
-router.put("/products/:id",verifyToken,adminAuth,AdminController.updateProduct);
+router.put(
+  "/products/:id",
+  verifyToken,
+  adminAuth,
+  AdminController.updateProduct,
+);
 
 // Delete Product
-router.delete("/products/:id",verifyToken,adminAuth,AdminController.deleteProduct);
+router.delete(
+  "/products/:id",
+  verifyToken,
+  adminAuth,
+  AdminController.deleteProduct,
+);
 
 // Get Categories of Products
-router.get("/categories",verifyToken,adminAuth,AdminController.getCategories);
+router.get(
+  "/categories",
+  verifyToken,
+  adminAuth,
+  AdminController.getCategories,
+);
 
 // ===== USER ROUTES =====
 
@@ -58,7 +108,12 @@ router.delete("/users/:id", verifyToken, adminAuth, AdminController.deleteUser);
 // ===== ORDER ROUTES =====
 
 // GET orders with search
-router.get("/orders/search",verifyToken,adminAuth,AdminController.searchOrders);
+router.get(
+  "/orders/search",
+  verifyToken,
+  adminAuth,
+  AdminController.searchOrders,
+);
 
 // Get All Orders
 router.get("/orders", verifyToken, adminAuth, AdminController.getAllOrders);
@@ -67,9 +122,19 @@ router.get("/orders", verifyToken, adminAuth, AdminController.getAllOrders);
 router.get("/orders/:id", verifyToken, adminAuth, AdminController.getOrderById);
 
 // Update Order Status
-router.put("/orders/:id/status", verifyToken,adminAuth,AdminController.updateOrderStatus);
+router.put(
+  "/orders/:id/status",
+  verifyToken,
+  adminAuth,
+  AdminController.updateOrderStatus,
+);
 
 // Delete Order by ID
-router.delete("/orders/:id",verifyToken,adminAuth,AdminController.deleteOrder);
+router.delete(
+  "/orders/:id",
+  verifyToken,
+  adminAuth,
+  AdminController.deleteOrder,
+);
 
 export default router;

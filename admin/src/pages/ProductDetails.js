@@ -47,7 +47,7 @@ function AdminProductDetails() {
   };
 
   const formatPrice = (value) =>
-    `₹${Number(value || 0).toLocaleString("en-IN")}`;
+    `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
   if (loading) {
     return (

@@ -77,7 +77,7 @@ function UserDetails() {
   };
 
   const formatPrice = (value) => {
-    return `₹${Number(value || 0).toLocaleString("en-IN")}`;
+    return `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
   };
 
   const getStatusClass = (status) => {
