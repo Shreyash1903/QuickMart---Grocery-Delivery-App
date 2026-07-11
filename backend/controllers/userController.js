@@ -325,34 +325,30 @@ class UserController {
 
   // Reset Password after OTP verification
   static userResetPassword = async (req, res) => {
-    try {
-      const { email, otp, password } = req.body; // Frontend se email, OTP aur new password receive hota hai.
+  try {
+    const { email, otp, password } = req.body;
 
-      // MongoDB me check karega ki email aur OTP match karte hai ya nahi aur OTP expire nahi hua hai.
-      const user = await UserModel.findOne({
-        email,
-        resetOTP: otp,
-        resetOTPExpire: { $gt: Date.now() },
-      });
+    const user = await UserModel.findOne({
+      email,
+      resetOTP: otp,
+      resetOTPExpire: { $gt: Date.now() },
+    });
 
-      // Agar user nahi mila toh error message bhejega.
-      if (!user) {
-        return res.status(400).json({ message: "Invalid or expired OTP." });
-      }
-
-      // Hash new password and save
-      const hashedPassword = await bcrypt.hash(password, 10);
-      user.password = hashedPassword;
-      user.resetOTP = undefined;
-      user.resetOTPExpire = undefined;
-      await user.save();
-
-      res
-        .status(200)
-        .json({ message: "Password has been reset successfully." });
-    } catch (error) {
-      res.status(500).json({ message: "Error resetting password." });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired OTP." });
     }
+
+    // ✅ DON'T hash manually - let the pre-save hook handle it
+    user.password = password; // Set plain password
+    user.resetOTP = undefined;
+    user.resetOTPExpire = undefined;
+    await user.save(); // Pre-save hook will hash it automatically
+
+    res.status(200).json({ message: "Password has been reset successfully." });
+  } catch (error) {
+    console.error("Error in userResetPassword:", error);
+    res.status(500).json({ message: "Error resetting password." });
+  }
   };
 
   // Get current logged-in user details
