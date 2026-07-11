@@ -381,12 +381,17 @@ function Products() {
 
                 <div className="product-card-pricing">
                   <span className="product-card-price">
-                    {formatPrice(product.price)}
+                    {formatPrice(
+                      product.discountPrice &&
+                        product.discountPrice < product.price
+                        ? product.discountPrice
+                        : product.price,
+                    )}
                   </span>
                   {product.discountPrice &&
                     product.discountPrice < product.price && (
                       <span className="product-card-discount-price">
-                        {formatPrice(product.discountPrice)}
+                        {formatPrice(product.price)}
                       </span>
                     )}
                 </div>
