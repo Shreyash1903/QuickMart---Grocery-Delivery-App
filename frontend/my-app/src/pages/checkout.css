@@ -183,6 +183,8 @@
   white-space: nowrap;
   min-width: 100px;
   justify-content: center;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .checkout-secondary-btn.back-btn:hover,
@@ -287,6 +289,9 @@
   cursor: pointer;
   transition: all 0.3s ease;
   align-items: flex-start;
+  min-height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .checkout-address-item:hover,
@@ -463,6 +468,11 @@
   justify-content: center;
   gap: 10px;
   box-shadow: 0 10px 30px rgba(12, 131, 31, 0.15);
+  position: relative;
+  z-index: 1;
+  min-height: 50px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .checkout-primary-btn:hover:not(:disabled) {

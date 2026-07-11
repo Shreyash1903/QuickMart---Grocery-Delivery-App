@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 import "./navbar.css";
 import { CART_UPDATED_EVENT, getCart } from "../api/cart";
@@ -9,6 +9,7 @@ import { getWishlist } from "../api/wishlist";
 
 function Navbar({ user, handleLogout }) {
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [cartSummary, setCartSummary] = useState({
     itemCount: 0,
@@ -16,11 +17,14 @@ function Navbar({ user, handleLogout }) {
   });
 
   const [wishlistCount, setWishlistCount] = useState(0);
-  const [location, setLocation] = useState("Fetching location...");
+  const [userLocation, setUserLocation] = useState("Fetching location...");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // ✅ Check if user is logged in
   const isLoggedIn = !!user;
+
+  // ✅ Check if on home page
+  const isHomePage = location.pathname === "/";
 
   // ✅ Load wishlist count
   const loadWishlistCount = async () => {
@@ -99,10 +103,10 @@ function Navbar({ user, handleLogout }) {
 
         const state = data.address.state || "";
 
-        setLocation(`${city}, ${state}`);
+        setUserLocation(`${city}, ${state}`);
       } catch (error) {
         console.log(error);
-        setLocation("Location unavailable");
+        setUserLocation("Location unavailable");
       }
     };
 
@@ -147,26 +151,29 @@ function Navbar({ user, handleLogout }) {
       <div className="header-container">
         {/* LEFT - Hamburger + Logo */}
         <div className="header-left">
-          {/* ✅ Hamburger Menu Button - Mobile only, now on LEFT */}
-          <button 
-            className={`hamburger-btn ${isMobileMenuOpen ? 'active' : ''}`}
-            onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
-          >
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-            <span className="hamburger-line"></span>
-          </button>
+          {/* ✅ HAMBURGER MENU - Only show when logged in */}
+          {isLoggedIn && (
+            <button 
+              className={`hamburger-btn ${isMobileMenuOpen ? 'active' : ''}`}
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+            >
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+            </button>
+          )}
 
           <div className="logo" onClick={() => handleNavClick("/")}>
             <span className="logo-text">Quick</span>
             <span className="logo-text-highlight">Mart</span>
           </div>
 
+          {/* Location - Desktop */}
           <div className="location-info desktop-only">
             <div className="address">
               <i className="bi bi-geo-alt"></i>
-              <span className="address-text">{location}</span>
+              <span className="address-text">{userLocation}</span>
               <i
                 className="bi bi-chevron-down"
                 style={{ fontSize: "12px" }}
@@ -175,21 +182,32 @@ function Navbar({ user, handleLogout }) {
           </div>
         </div>
 
-        {/* MIDDLE - SearchBar */}
-        <div className="header-middle">
+        {/* MIDDLE - SearchBar (Hidden on mobile home page) */}
+        <div className={`header-middle ${isHomePage ? 'hide-on-mobile-home' : ''}`}>
           <SearchBar />
         </div>
 
+        {/* ✅ Mobile Location - Shown on home page instead of search */}
+        {isHomePage && (
+          <div className="mobile-location-header">
+            <i className="bi bi-geo-alt"></i>
+            <span className="mobile-location-text">{userLocation}</span>
+            <i className="bi bi-chevron-down"></i>
+          </div>
+        )}
+
         {/* RIGHT - Desktop Nav Items + Cart */}
         <div className="header-right">
-          {/* ✅ PRODUCTS BUTTON - Desktop */}
-          <button
-            className="products-btn desktop-nav-item"
-            onClick={() => handleNavClick("/products")}
-          >
-            <i className="bi bi-grid"></i>
-            <span>Products</span>
-          </button>
+          {/* ✅ PRODUCTS BUTTON - Desktop (Only when logged in) */}
+          {isLoggedIn && (
+            <button
+              className="products-btn desktop-nav-item"
+              onClick={() => handleNavClick("/products")}
+            >
+              <i className="bi bi-grid"></i>
+              <span>Products</span>
+            </button>
+          )}
 
           {/* ✅ WISHLIST BUTTON - Desktop (Only when logged in) */}
           {isLoggedIn && (
@@ -308,113 +326,113 @@ function Navbar({ user, handleLogout }) {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}></div>
+      {/* ✅ Mobile Menu - Only show when logged in */}
+      {isLoggedIn && (
+        <>
+          <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}></div>
+          <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+            <div className="mobile-menu-header">
+              <div className="mobile-menu-logo">
+                <span className="logo-text">Quick</span>
+                <span className="logo-text-highlight">Mart</span>
+              </div>
+              <button className="mobile-menu-close" onClick={toggleMobileMenu}>
+                <i className="bi bi-x-lg"></i>
+              </button>
+            </div>
 
-      {/* Mobile Menu */}
-      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
-        <div className="mobile-menu-header">
-          <div className="mobile-menu-logo">
-            <span className="logo-text">Quick</span>
-            <span className="logo-text-highlight">Mart</span>
-          </div>
-          <button className="mobile-menu-close" onClick={toggleMobileMenu}>
-            <i className="bi bi-x-lg"></i>
-          </button>
-        </div>
+            <div className="mobile-menu-body">
+              {/* Products */}
+              <button 
+                className="mobile-menu-item"
+                onClick={() => handleNavClick("/products")}
+              >
+                <i className="bi bi-grid"></i>
+                <span>Products</span>
+              </button>
 
-        <div className="mobile-menu-body">
-          {/* ❌ LOCATION REMOVED FROM MOBILE MENU */}
-
-          {/* Products */}
-          <button 
-            className="mobile-menu-item"
-            onClick={() => handleNavClick("/products")}
-          >
-            <i className="bi bi-grid"></i>
-            <span>Products</span>
-          </button>
-
-          {/* Wishlist - Only when logged in */}
-          {isLoggedIn && (
-            <button 
-              className="mobile-menu-item"
-              onClick={() => handleNavClick("/wishlist")}
-            >
-              <i className="bi bi-heart"></i>
-              <span>Wishlist</span>
-              {wishlistCount > 0 && (
-                <span className="mobile-menu-badge">{wishlistCount}</span>
+              {/* Wishlist - Only when logged in */}
+              {isLoggedIn && (
+                <button 
+                  className="mobile-menu-item"
+                  onClick={() => handleNavClick("/wishlist")}
+                >
+                  <i className="bi bi-heart"></i>
+                  <span>Wishlist</span>
+                  {wishlistCount > 0 && (
+                    <span className="mobile-menu-badge">{wishlistCount}</span>
+                  )}
+                </button>
               )}
-            </button>
-          )}
 
-          {/* AI Search - Only when logged in */}
-          {isLoggedIn && (
-            <button 
-              className="mobile-menu-item"
-              onClick={() => handleNavClick("/ai-search")}
-            >
-              <i className="bi bi-stars"></i>
-              <span>AI Search</span>
-            </button>
-          )}
+              {/* AI Search - Only when logged in */}
+              {isLoggedIn && (
+                <button 
+                  className="mobile-menu-item"
+                  onClick={() => handleNavClick("/ai-search")}
+                >
+                  <i className="bi bi-stars"></i>
+                  <span>AI Search</span>
+                </button>
+              )}
 
-          {/* Orders - Only when logged in */}
-          {isLoggedIn && (
-            <button 
-              className="mobile-menu-item"
-              onClick={() => handleNavClick("/orders")}
-            >
-              <i className="bi bi-box-seam"></i>
-              <span>My Orders</span>
-            </button>
-          )}
+              {/* Orders - Only when logged in */}
+              {isLoggedIn && (
+                <button 
+                  className="mobile-menu-item"
+                  onClick={() => handleNavClick("/orders")}
+                >
+                  <i className="bi bi-box-seam"></i>
+                  <span>My Orders</span>
+                </button>
+              )}
 
-          {/* Addresses - Only when logged in */}
-          {isLoggedIn && (
-            <button 
-              className="mobile-menu-item"
-              onClick={() => handleNavClick("/address")}
-            >
-              <i className="bi bi-geo-alt"></i>
-              <span>Saved Addresses</span>
-            </button>
-          )}
+              {/* Addresses - Only when logged in */}
+              {isLoggedIn && (
+                <button 
+                  className="mobile-menu-item"
+                  onClick={() => handleNavClick("/address")}
+                >
+                  <i className="bi bi-geo-alt"></i>
+                  <span>Saved Addresses</span>
+                </button>
+              )}
 
-          {/* Account - Only when logged in */}
-          {isLoggedIn && (
-            <button 
-              className="mobile-menu-item"
-              onClick={() => handleNavClick("/account")}
-            >
-              <i className="bi bi-person"></i>
-              <span>My Account</span>
-            </button>
-          )}
+              {/* Account - Only when logged in */}
+              {isLoggedIn && (
+                <button 
+                  className="mobile-menu-item"
+                  onClick={() => handleNavClick("/account")}
+                >
+                  <i className="bi bi-person"></i>
+                  <span>My Account</span>
+                </button>
+              )}
 
-          <div className="mobile-menu-divider"></div>
+              <div className="mobile-menu-divider"></div>
 
-          {/* Login / Logout */}
-          {isLoggedIn ? (
-            <button 
-              className="mobile-menu-item mobile-logout"
-              onClick={handleLogoutClick}
-            >
-              <i className="bi bi-box-arrow-right"></i>
-              <span>Log Out</span>
-            </button>
-          ) : (
-            <button 
-              className="mobile-menu-item mobile-login"
-              onClick={() => handleNavClick("/login")}
-            >
-              <i className="bi bi-person"></i>
-              <span>Login / Sign Up</span>
-            </button>
-          )}
-        </div>
-      </div>
+              {/* Login / Logout */}
+              {isLoggedIn ? (
+                <button 
+                  className="mobile-menu-item mobile-logout"
+                  onClick={handleLogoutClick}
+                >
+                  <i className="bi bi-box-arrow-right"></i>
+                  <span>Log Out</span>
+                </button>
+              ) : (
+                <button 
+                  className="mobile-menu-item mobile-login"
+                  onClick={() => handleNavClick("/login")}
+                >
+                  <i className="bi bi-person"></i>
+                  <span>Login / Sign Up</span>
+                </button>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 }

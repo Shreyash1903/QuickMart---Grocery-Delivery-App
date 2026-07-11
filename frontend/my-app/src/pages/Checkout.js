@@ -23,7 +23,8 @@ import { toast } from "react-toastify";
 import "./checkout.css";
 
 // Formats a number into Indian Rupees format (e.g., ₹ 1,234.00).
-const formatPrice = (value) => `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
+const formatPrice = (value) =>
+  `₹ ${Number(value || 0).toLocaleString("en-IN")}`;
 
 // This function dynamically loads the Razorpay SDK script into the page.
 // Download: https://checkout.razorpay.com/v1/checkout.js
@@ -35,7 +36,7 @@ const loadRazorpayScript = () =>
     }
 
     const script = document.createElement("script");
-    script.src = "https://checkout.razorpay.com/v1/checkout.js";// Load Razorpay SDK from their CDN
+    script.src = "https://checkout.razorpay.com/v1/checkout.js"; // Load Razorpay SDK from their CDN
     script.async = true;
     script.onload = () => resolve(true);
     script.onerror = () => resolve(false);
@@ -110,20 +111,21 @@ function Checkout() {
   // So this same function is reused for both payment methods.
 
   const finalizeOrder = async (selectedPaymentMethod) => {
-    await placeOrder({ // Calls the backend API to place the order.
+    await placeOrder({
+      // Calls the backend API to place the order.
       addressId: selectedAddressId, // Sends the selected address ID.
       paymentMethod: selectedPaymentMethod, // Sends the selected payment method (Cash on Delivery or Online).
     });
 
     // After placing the order, it clears the cart and notifies other parts of the app that the cart has been updated.
-    notifyCartUpdated();// 
-    
+    notifyCartUpdated(); //
+
     // ✅ Success Toast
-    toast.success("🎉 Order placed successfully!", { 
+    toast.success("🎉 Order placed successfully!", {
       position: "top-right",
       autoClose: 4000,
     });
-    
+
     // After placing the order, it navigates to the Orders page.
     navigate("/orders", { replace: true });
   };
@@ -133,7 +135,8 @@ function Checkout() {
     const scriptLoaded = await loadRazorpayScript(); // Load Razorpay SDK script dynamically
 
     // If the Razorpay SDK script fails to load, it shows an error message and stops the payment process.
-    if (!scriptLoaded) { // If Razorpay SDK couldn't load,
+    if (!scriptLoaded) {
+      // If Razorpay SDK couldn't load,
       const errorMsg = "Razorpay SDK failed to load. Please try again.";
       setError(errorMsg); // stores the error.
       toast.error(`❌ ${errorMsg}`, {
@@ -145,7 +148,8 @@ function Checkout() {
 
     // If the Razorpay key is not configured in the frontend environment, it shows an error message and stops the payment process.
     if (!process.env.REACT_APP_RAZORPAY_KEY_ID) {
-      const errorMsg = "Razorpay key is not configured in the frontend environment.";
+      const errorMsg =
+        "Razorpay key is not configured in the frontend environment.";
       setError(errorMsg);
       toast.error(`❌ ${errorMsg}`, {
         position: "top-right",
@@ -184,7 +188,9 @@ function Checkout() {
               razorpayPaymentId: response.razorpay_payment_id,
             });
           } catch (verifyError) {
-            const errorMsg = verifyError.response?.data?.message || "Payment verification failed";
+            const errorMsg =
+              verifyError.response?.data?.message ||
+              "Payment verification failed";
             setError(errorMsg);
             toast.error(`❌ ${errorMsg}`, {
               position: "top-right",
@@ -214,7 +220,8 @@ function Checkout() {
 
       // This creates the Razorpay Checkout instance using the options you prepared.
       const razorpay = new window.Razorpay(options);
-      razorpay.on("payment.failed", () => { // If the payment fails, it shows an error message.
+      razorpay.on("payment.failed", () => {
+        // If the payment fails, it shows an error message.
         const errorMsg = "Payment failed. Please try again.";
         setError(errorMsg);
         toast.error(`❌ ${errorMsg}`, {
@@ -223,7 +230,23 @@ function Checkout() {
         });
         setSubmitting(false);
       });
-      razorpay.open(); // Opens the Razorpay payment window for the user to complete the payment.
+
+      // Open the Razorpay checkout shortly after the user tap to avoid mobile browsers
+      // treating the payment window as a blocked popup when the request is delayed.
+      requestAnimationFrame(() => {
+        try {
+          razorpay.open();
+        } catch (openError) {
+          const errorMsg =
+            openError?.message || "Unable to open Razorpay checkout";
+          setError(errorMsg);
+          toast.error(`❌ ${errorMsg}`, {
+            position: "top-right",
+            autoClose: 4000,
+          });
+          setSubmitting(false);
+        }
+      });
     } catch (err) {
       setSubmitting(false);
       const errorMsg = err.response?.data?.message || "Failed to start payment";
@@ -390,7 +413,9 @@ function Checkout() {
                       {address.houseNo}, {address.area}, {address.city},{" "}
                       {address.state} - {address.pincode}
                     </p>
-                    <span className="address-mobile">{address.mobileNumber}</span>
+                    <span className="address-mobile">
+                      {address.mobileNumber}
+                    </span>
                   </div>
                 </label>
               ))}

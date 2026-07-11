@@ -260,29 +260,59 @@
   font-size: 18px;
 }
 
-/* ===== LOGIN BUTTON ===== */
+/* ===== LOGIN BUTTON - BEAUTIFUL UI ===== */
 .login-nav-btn {
-  background: none;
+  background: linear-gradient(135deg, #0c831f, #0a6a18);
+  color: #fff;
   border: none;
   font-size: 14px;
   font-weight: 600;
-  color: #222;
   cursor: pointer;
-  padding: 8px 16px;
+  padding: 8px 20px;
   transition: all 0.3s ease;
   display: flex;
   align-items: center;
-  gap: 6px;
-  border-radius: 8px;
+  gap: 8px;
+  border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(12, 131, 31, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Shine effect on login button */
+.login-nav-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s ease;
+}
+
+.login-nav-btn:hover::before {
+  left: 100%;
 }
 
 .login-nav-btn:hover {
-  color: #0c831f;
-  background: rgba(12, 131, 31, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(12, 131, 31, 0.35);
+  background: linear-gradient(135deg, #0a8a1f, #085012);
+}
+
+.login-nav-btn:active {
+  transform: translateY(0px) scale(0.97);
+  box-shadow: 0 4px 12px rgba(12, 131, 31, 0.15);
 }
 
 .login-nav-btn i {
   font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.login-nav-btn:hover i {
+  transform: translateX(-2px);
 }
 
 /* ===== ACCOUNT DROPDOWN ===== */
@@ -539,7 +569,7 @@
   opacity: 1;
 }
 
-/* ===== HAMBURGER MENU - MOBILE ONLY ===== */
+/* ===== HAMBURGER MENU - MOBILE ONLY (Hidden by default) ===== */
 .hamburger-btn {
   display: none;
   flex-direction: column;
@@ -579,6 +609,46 @@
 
 .hamburger-btn.active .hamburger-line:nth-child(3) {
   transform: rotate(-45deg) translate(5px, -5px);
+}
+
+/* ===== MOBILE LOCATION HEADER - Shown on home page ===== */
+.mobile-location-header {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  flex: 1;
+  min-width: 0;
+  justify-content: flex-start;
+}
+
+.mobile-location-header:hover {
+  color: #0c831f;
+  background: rgba(12, 131, 31, 0.05);
+}
+
+.mobile-location-header i {
+  font-size: 16px;
+  color: #0c831f;
+  flex-shrink: 0;
+}
+
+.mobile-location-header .mobile-location-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+}
+
+.mobile-location-header .bi-chevron-down {
+  font-size: 10px;
+  color: #999;
+  flex-shrink: 0;
 }
 
 /* ===== MOBILE MENU OVERLAY ===== */
@@ -804,12 +874,18 @@
     font-size: 20px;
   }
 
-  .login-nav-btn span {
-    display: none;
+  /* Login button on tablet */
+  .login-nav-btn {
+    padding: 6px 14px;
+    font-size: 13px;
   }
 
   .login-nav-btn i {
-    font-size: 20px;
+    font-size: 16px;
+  }
+
+  .login-nav-btn span {
+    display: inline;
   }
 
   .account-menu {
@@ -824,48 +900,26 @@
 @media (max-width: 768px) {
   .header-container {
     padding: 0 12px;
-    gap: 10px;
+    gap: 8px;
   }
 
   .header-left {
-    gap: 10px;
+    gap: 8px;
   }
 
-  /* Hide location on mobile */
+  /* Hide desktop location on mobile */
   .desktop-only {
     display: none !important;
   }
 
-  /* ✅ SEARCH BAR - EXTENDED WIDTH FOR BETTER VISIBILITY */
-  .header-middle {
+  /* ✅ Hide search bar on home page mobile */
+  .header-middle.hide-on-mobile-home {
+    display: none !important;
+  }
+
+  /* ✅ Show mobile location on home page */
+  .mobile-location-header {
     display: flex !important;
-    flex: 2;
-    min-width: 140px;
-    max-width: 400px;
-  }
-
-  .search-bar {
-    height: 36px;
-    border-radius: 10px;
-    padding: 0 12px;
-    width: 100%;
-  }
-
-  .search-bar i {
-    font-size: 15px;
-    flex-shrink: 0;
-  }
-
-  .search-bar input {
-    font-size: 13px;
-    padding: 0 8px;
-    width: 100%;
-    min-width: 80px;
-  }
-
-  .search-bar input::placeholder {
-    font-size: 12px;
-    color: #999;
   }
 
   .logo {
@@ -894,7 +948,7 @@
     right: -2px;
   }
 
-  /* ✅ Show hamburger on mobile - LEFT side */
+  /* ✅ HAMBURGER - Only shown when logged in (controlled by JS) */
   .hamburger-btn {
     display: flex;
     flex-shrink: 0;
@@ -903,6 +957,48 @@
   /* ✅ HIDE DESKTOP NAV ITEMS ON MOBILE */
   .desktop-nav-item {
     display: none !important;
+  }
+
+  /* ✅ LOGIN BUTTON - BLACK BACKGROUND WITH WHITE ICON ON MOBILE */
+  .login-nav-btn {
+    display: flex !important;
+    padding: 8px;
+    border-radius: 50% !important;
+    min-width: 36px;
+    min-height: 36px;
+    width: 36px;
+    height: 36px;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    background: #1a1a1a !important;
+    border: 1.5px solid #333333;
+  }
+
+  .login-nav-btn i {
+    font-size: 18px;
+    margin: 0;
+    color: #ffffff !important;
+  }
+
+  .login-nav-btn span {
+    display: none !important;
+  }
+
+  .login-nav-btn::before {
+    display: none;
+  }
+
+  .login-nav-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+    background: #2a2a2a !important;
+    border-color: #444444;
+  }
+
+  .login-nav-btn:active {
+    transform: scale(0.92);
+    background: #000000 !important;
   }
 
   .mobile-menu-overlay {
@@ -952,41 +1048,18 @@
     flex-shrink: 0;
   }
 
-  /* ✅ SEARCH BAR - EVEN WIDER ON SMALL MOBILE */
-  .header-middle {
-    min-width: 100px;
-    max-width: 300px;
-    flex: 2;
-  }
-
-  .search-bar {
-    height: 32px;
-    border-radius: 8px;
-    padding: 0 10px;
-  }
-
-  .search-bar i {
-    font-size: 13px;
-  }
-
-  .search-bar input {
+  .mobile-location-header {
     font-size: 12px;
-    padding: 0 6px;
-    min-width: 60px;
-  }
-
-  .search-bar input::placeholder {
-    font-size: 11px;
-  }
-
-  .hamburger-btn {
+    padding: 4px 6px;
     gap: 4px;
-    padding: 6px 3px;
   }
 
-  .hamburger-line {
-    width: 20px;
-    height: 2px;
+  .mobile-location-header i {
+    font-size: 14px;
+  }
+
+  .mobile-location-header .mobile-location-text {
+    font-size: 12px;
   }
 
   .header-right {
@@ -1006,6 +1079,29 @@
     min-width: 15px;
     height: 15px;
     padding: 0 3px;
+  }
+
+  /* Login button on small mobile - smaller round */
+  .login-nav-btn {
+    min-width: 32px;
+    min-height: 32px;
+    width: 32px;
+    height: 32px;
+    padding: 6px;
+  }
+
+  .login-nav-btn i {
+    font-size: 16px;
+  }
+
+  .hamburger-btn {
+    gap: 4px;
+    padding: 6px 3px;
+  }
+
+  .hamburger-line {
+    width: 20px;
+    height: 2px;
   }
 
   .mobile-menu {
@@ -1059,41 +1155,22 @@
     flex-shrink: 0;
   }
 
-  /* ✅ SEARCH BAR - MAXIMUM WIDTH FOR EXTRA SMALL */
-  .header-middle {
-    min-width: 70px;
-    max-width: 200px;
-    flex: 2;
+  .mobile-location-header {
+    font-size: 10px;
+    padding: 3px 4px;
+    gap: 3px;
   }
 
-  .search-bar {
-    height: 28px;
-    border-radius: 6px;
-    padding: 0 8px;
+  .mobile-location-header i {
+    font-size: 12px;
   }
 
-  .search-bar i {
-    font-size: 11px;
-  }
-
-  .search-bar input {
-    font-size: 11px;
-    padding: 0 4px;
-    min-width: 50px;
-  }
-
-  .search-bar input::placeholder {
+  .mobile-location-header .mobile-location-text {
     font-size: 10px;
   }
 
-  .hamburger-btn {
-    gap: 3px;
-    padding: 5px 2px;
-  }
-
-  .hamburger-line {
-    width: 16px;
-    height: 2px;
+  .mobile-location-header .bi-chevron-down {
+    font-size: 8px;
   }
 
   .cart-btn i {
@@ -1106,6 +1183,29 @@
     height: 13px;
     top: -3px;
     right: -3px;
+  }
+
+  /* Login button on extra small - smallest round */
+  .login-nav-btn {
+    min-width: 28px;
+    min-height: 28px;
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  .login-nav-btn i {
+    font-size: 14px;
+  }
+
+  .hamburger-btn {
+    gap: 3px;
+    padding: 5px 2px;
+  }
+
+  .hamburger-line {
+    width: 16px;
+    height: 2px;
   }
 
   .mobile-menu {
@@ -1257,6 +1357,43 @@
 
     .wishlist-badge {
       background: #ef4444;
+    }
+
+    /* Dark mode login button - black with white icon */
+    .login-nav-btn {
+      background: #000000 !important;
+      border-color: #2a2a2a !important;
+    }
+
+    .login-nav-btn i {
+      color: #ffffff !important;
+    }
+
+    .login-nav-btn:hover {
+      background: #1a1a1a !important;
+      border-color: #333333 !important;
+    }
+
+    .login-nav-btn:active {
+      background: #000000 !important;
+    }
+
+    /* Dark mode mobile location */
+    .mobile-location-header {
+      color: #999;
+    }
+
+    .mobile-location-header:hover {
+      color: #4caf50;
+      background: rgba(76, 175, 80, 0.1);
+    }
+
+    .mobile-location-header i {
+      color: #4caf50;
+    }
+
+    .mobile-location-header .bi-chevron-down {
+      color: #666;
     }
   }
 }
