@@ -17,6 +17,7 @@ function Navbar({ user, handleLogout }) {
 
   const [wishlistCount, setWishlistCount] = useState(0);
   const [location, setLocation] = useState("Fetching location...");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // ✅ Check if user is logged in
   const isLoggedIn = !!user;
@@ -126,20 +127,43 @@ function Navbar({ user, handleLogout }) {
       handleLogout();
     }
     window.dispatchEvent(new CustomEvent('authChanged'));
+    setIsMobileMenuOpen(false);
     navigate("/");
+  };
+
+  // ✅ Toggle mobile menu
+  const toggleMobileMenu = () => {
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  // ✅ Close mobile menu on navigation
+  const handleNavClick = (path) => {
+    setIsMobileMenuOpen(false);
+    navigate(path);
   };
 
   return (
     <header className="blinkit-header">
       <div className="header-container">
-        {/* LEFT */}
+        {/* LEFT - Hamburger + Logo */}
         <div className="header-left">
-          <div className="logo" onClick={() => navigate("/")}>
+          {/* ✅ Hamburger Menu Button - Mobile only, now on LEFT */}
+          <button 
+            className={`hamburger-btn ${isMobileMenuOpen ? 'active' : ''}`}
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+          >
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+            <span className="hamburger-line"></span>
+          </button>
+
+          <div className="logo" onClick={() => handleNavClick("/")}>
             <span className="logo-text">Quick</span>
             <span className="logo-text-highlight">Mart</span>
           </div>
 
-          <div className="location-info">
+          <div className="location-info desktop-only">
             <div className="address">
               <i className="bi bi-geo-alt"></i>
               <span className="address-text">{location}</span>
@@ -156,22 +180,22 @@ function Navbar({ user, handleLogout }) {
           <SearchBar />
         </div>
 
-        {/* RIGHT */}
+        {/* RIGHT - Desktop Nav Items + Cart */}
         <div className="header-right">
-          {/* ✅ Products - Always Visible */}
+          {/* ✅ PRODUCTS BUTTON - Desktop */}
           <button
-            className="products-btn"
-            onClick={() => navigate("/products")}
+            className="products-btn desktop-nav-item"
+            onClick={() => handleNavClick("/products")}
           >
             <i className="bi bi-grid"></i>
             <span>Products</span>
           </button>
 
-          {/* ✅ WISHLIST - Only when logged in */}
+          {/* ✅ WISHLIST BUTTON - Desktop (Only when logged in) */}
           {isLoggedIn && (
             <button
-              className="wishlist-nav-btn"
-              onClick={() => navigate("/wishlist")}
+              className="wishlist-nav-btn desktop-nav-item"
+              onClick={() => handleNavClick("/wishlist")}
             >
               <i className={`bi bi-heart ${wishlistCount > 0 ? 'has-items' : ''}`}></i>
               <span>Wishlist</span>
@@ -181,20 +205,20 @@ function Navbar({ user, handleLogout }) {
             </button>
           )}
 
-          {/* ✅ AI SEARCH - Only when logged in */}
+          {/* ✅ AI SEARCH BUTTON - Desktop (Only when logged in) */}
           {isLoggedIn && (
             <button
-              className="ai-search-nav-btn"
-              onClick={() => navigate("/ai-search")}
+              className="ai-search-nav-btn desktop-nav-item"
+              onClick={() => handleNavClick("/ai-search")}
             >
               <i className="bi bi-stars"></i>
               <span>AI Search</span>
             </button>
           )}
 
-          {/* ✅ Account / Login */}
+          {/* ✅ ACCOUNT / LOGIN - Desktop */}
           {isLoggedIn ? (
-            <div className="account-dropdown">
+            <div className="account-dropdown desktop-nav-item">
               <div className="account-avatar">{getInitials(user.name)}</div>
 
               <div className="account-menu">
@@ -210,21 +234,21 @@ function Navbar({ user, handleLogout }) {
                 <div className="account-menu-items">
                   <button
                     className="account-menu-item"
-                    onClick={() => navigate("/orders")}
+                    onClick={() => handleNavClick("/orders")}
                   >
                     <i className="bi bi-box-seam"></i>
                     <span>My Orders</span>
                   </button>
                   <button
                     className="account-menu-item"
-                    onClick={() => navigate("/address")}
+                    onClick={() => handleNavClick("/address")}
                   >
                     <i className="bi bi-geo-alt"></i>
                     <span>Saved Addresses</span>
                   </button>
                   <button
                     className="account-menu-item"
-                    onClick={() => navigate("/wishlist")}
+                    onClick={() => handleNavClick("/wishlist")}
                   >
                     <i className="bi bi-heart"></i>
                     <span>My Wishlist</span>
@@ -234,7 +258,7 @@ function Navbar({ user, handleLogout }) {
                   </button>
                   <button
                     className="account-menu-item"
-                    onClick={() => navigate("/account")}
+                    onClick={() => handleNavClick("/account")}
                   >
                     <i className="bi bi-person"></i>
                     <span>My Account</span>
@@ -252,26 +276,26 @@ function Navbar({ user, handleLogout }) {
             </div>
           ) : (
             <button
-              className="login-nav-btn"
-              onClick={() => navigate("/login")}
+              className="login-nav-btn desktop-nav-item"
+              onClick={() => handleNavClick("/login")}
             >
               <i className="bi bi-person"></i>
               <span>Login</span>
             </button>
           )}
 
-          {/* ✅ CART - Always visible, disabled when not logged in */}
+          {/* ✅ CART BUTTON */}
           <button 
             className={`cart-btn ${!isLoggedIn ? 'disabled' : ''}`}
             onClick={() => {
               if (isLoggedIn) {
-                navigate("/cart");
+                handleNavClick("/cart");
               } else {
                 toast.warning("Please login to view your cart", {
                   position: "top-right",
                   autoClose: 3000,
                 });
-                navigate("/login");
+                handleNavClick("/login");
               }
             }}
             title={!isLoggedIn ? "Please login to view cart" : "View Cart"}
@@ -281,6 +305,114 @@ function Navbar({ user, handleLogout }) {
               <span className="cart-badge">{cartSummary.itemCount}</span>
             )}
           </button>
+        </div>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'open' : ''}`} onClick={toggleMobileMenu}></div>
+
+      {/* Mobile Menu */}
+      <div className={`mobile-menu ${isMobileMenuOpen ? 'open' : ''}`}>
+        <div className="mobile-menu-header">
+          <div className="mobile-menu-logo">
+            <span className="logo-text">Quick</span>
+            <span className="logo-text-highlight">Mart</span>
+          </div>
+          <button className="mobile-menu-close" onClick={toggleMobileMenu}>
+            <i className="bi bi-x-lg"></i>
+          </button>
+        </div>
+
+        <div className="mobile-menu-body">
+          {/* ❌ LOCATION REMOVED FROM MOBILE MENU */}
+
+          {/* Products */}
+          <button 
+            className="mobile-menu-item"
+            onClick={() => handleNavClick("/products")}
+          >
+            <i className="bi bi-grid"></i>
+            <span>Products</span>
+          </button>
+
+          {/* Wishlist - Only when logged in */}
+          {isLoggedIn && (
+            <button 
+              className="mobile-menu-item"
+              onClick={() => handleNavClick("/wishlist")}
+            >
+              <i className="bi bi-heart"></i>
+              <span>Wishlist</span>
+              {wishlistCount > 0 && (
+                <span className="mobile-menu-badge">{wishlistCount}</span>
+              )}
+            </button>
+          )}
+
+          {/* AI Search - Only when logged in */}
+          {isLoggedIn && (
+            <button 
+              className="mobile-menu-item"
+              onClick={() => handleNavClick("/ai-search")}
+            >
+              <i className="bi bi-stars"></i>
+              <span>AI Search</span>
+            </button>
+          )}
+
+          {/* Orders - Only when logged in */}
+          {isLoggedIn && (
+            <button 
+              className="mobile-menu-item"
+              onClick={() => handleNavClick("/orders")}
+            >
+              <i className="bi bi-box-seam"></i>
+              <span>My Orders</span>
+            </button>
+          )}
+
+          {/* Addresses - Only when logged in */}
+          {isLoggedIn && (
+            <button 
+              className="mobile-menu-item"
+              onClick={() => handleNavClick("/address")}
+            >
+              <i className="bi bi-geo-alt"></i>
+              <span>Saved Addresses</span>
+            </button>
+          )}
+
+          {/* Account - Only when logged in */}
+          {isLoggedIn && (
+            <button 
+              className="mobile-menu-item"
+              onClick={() => handleNavClick("/account")}
+            >
+              <i className="bi bi-person"></i>
+              <span>My Account</span>
+            </button>
+          )}
+
+          <div className="mobile-menu-divider"></div>
+
+          {/* Login / Logout */}
+          {isLoggedIn ? (
+            <button 
+              className="mobile-menu-item mobile-logout"
+              onClick={handleLogoutClick}
+            >
+              <i className="bi bi-box-arrow-right"></i>
+              <span>Log Out</span>
+            </button>
+          ) : (
+            <button 
+              className="mobile-menu-item mobile-login"
+              onClick={() => handleNavClick("/login")}
+            >
+              <i className="bi bi-person"></i>
+              <span>Login / Sign Up</span>
+            </button>
+          )}
         </div>
       </div>
     </header>

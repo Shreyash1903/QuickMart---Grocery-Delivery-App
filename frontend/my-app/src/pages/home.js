@@ -41,6 +41,12 @@ function Home({ user, getUserData }) {
 
   // Parallax effect for hero
   useEffect(() => {
+    const prefersFinePointer = window.matchMedia(
+      "(hover: hover) and (pointer: fine)",
+    ).matches;
+
+    if (!prefersFinePointer) return undefined;
+
     const handleMouseMove = (e) => {
       if (!heroRef.current) return;
       const { left, top, width, height } =
@@ -206,13 +212,6 @@ function Home({ user, getUserData }) {
             </h1>
             <p className="banner-subtitle">{homeData.banner.subtitle}</p>
             <div className="banner-actions">
-              <button className="shop-now-btn">
-                <span>Shop Now</span>
-                <i className="bi bi-arrow-right"></i>
-              </button>
-              <button className="explore-btn">
-                <i className="bi bi-play-circle"></i> Explore
-              </button>
             </div>
             <div className="banner-stats">
               <div className="stat-item">
