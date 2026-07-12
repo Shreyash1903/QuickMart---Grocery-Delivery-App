@@ -146,12 +146,50 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
     }
   }, [selectedCategory, sortBy, minPrice, maxPrice, showInStock]);
 
+  // ✅ NEW: Handle filter change with sidebar close
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    // ✅ Close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const handleSortChange = (e) => {
+    setSortBy(e.target.value);
+    // ✅ Close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
+  const handlePriceChange = (type, value) => {
+    if (type === 'min') {
+      setMinPrice(value);
+    } else {
+      setMaxPrice(value);
+    }
+  };
+
+  const handleInStockChange = (e) => {
+    setShowInStock(e.target.checked);
+    // ✅ Close sidebar on mobile after selection
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
+  };
+
   const resetFilters = () => {
     setSelectedCategory("all");
     setSortBy("default");
     setMinPrice("");
     setMaxPrice("");
     setShowInStock(false);
+    
+    // ✅ Close sidebar on mobile after reset
+    if (window.innerWidth <= 768) {
+      setIsSidebarOpen(false);
+    }
     
     toast.info("🔄 Filters reset successfully", {
       position: "top-right",
@@ -230,7 +268,7 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
               <select
                 className="filter-select"
                 value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
+                onChange={handleCategoryChange} // ✅ Updated
               >
                 <option value="all">All Categories</option>
                 {categories.map((cat) => (
@@ -245,7 +283,7 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
               <select
                 className="filter-select"
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
+                onChange={handleSortChange} // ✅ Updated
               >
                 <option value="default">Default</option>
                 <option value="price-low">Price: Low → High</option>
@@ -264,7 +302,7 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
                   className="price-input"
                   placeholder="Min"
                   value={minPrice}
-                  onChange={(e) => setMinPrice(e.target.value)}
+                  onChange={(e) => handlePriceChange('min', e.target.value)}
                 />
                 <span className="price-sep">-</span>
                 <input
@@ -272,7 +310,7 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
                   className="price-input"
                   placeholder="Max"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(e.target.value)}
+                  onChange={(e) => handlePriceChange('max', e.target.value)}
                 />
               </div>
             </div>
@@ -283,7 +321,7 @@ function ProductSection({ initialCategory = "", initialSearch = "" }) {
                 <input
                   type="checkbox"
                   checked={showInStock}
-                  onChange={(e) => setShowInStock(e.target.checked)}
+                  onChange={handleInStockChange} // ✅ Updated
                 />
                 <span>In Stock Only</span>
               </label>

@@ -12,6 +12,9 @@ router.post("/add", AddressController.addAddress);
 // Get All Addresses
 router.get("/", AddressController.getAddresses);
 
+// ✅ NEW: Get Single Address by ID
+router.get("/:id", AddressController.getAddressById);
+
 // Update Address
 router.put("/:id", AddressController.updateAddress);
 

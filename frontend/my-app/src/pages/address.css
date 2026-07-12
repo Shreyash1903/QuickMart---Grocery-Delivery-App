@@ -1,4 +1,7 @@
+/* ======================================== */
 /* ===== ADDRESS PAGE ===== */
+/* ======================================== */
+
 .address-page-shell {
   max-width: 1200px;
   margin: 0 auto;
@@ -17,7 +20,10 @@
   }
 }
 
+/* ======================================== */
 /* ===== LOADING ===== */
+/* ======================================== */
+
 .address-loading {
   min-height: 60vh;
   display: flex;
@@ -48,7 +54,10 @@
   font-weight: 500;
 }
 
+/* ======================================== */
 /* ===== HEADER ===== */
+/* ======================================== */
+
 .address-page-header {
   display: flex;
   align-items: center;
@@ -94,7 +103,10 @@
   flex-wrap: wrap;
 }
 
+/* ======================================== */
 /* ===== SUCCESS TOAST ===== */
+/* ======================================== */
+
 .address-success-toast {
   background: linear-gradient(135deg, #0c831f, #0a6a18);
   color: white;
@@ -121,7 +133,10 @@
   }
 }
 
+/* ======================================== */
 /* ===== ERROR ===== */
+/* ======================================== */
+
 .address-page-error {
   color: #b42318;
   font-weight: 600;
@@ -135,7 +150,10 @@
   gap: 10px;
 }
 
+/* ======================================== */
 /* ===== DELETE CONFIRMATION ===== */
+/* ======================================== */
+
 .delete-confirm-overlay {
   position: fixed;
   top: 0;
@@ -250,6 +268,17 @@
 }
 
 /* ======================================== */
+/* ===== ADDRESS ADD GRID - SIDE BY SIDE ===== */
+/* ======================================== */
+
+.address-add-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ======================================== */
 /* ===== MAP CARD ===== */
 /* ======================================== */
 
@@ -260,6 +289,7 @@
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
   padding: 24px;
   transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .address-map-card:hover {
@@ -291,7 +321,7 @@
 }
 
 /* ======================================== */
-/* ===== MAP PICKER ===== */
+/* ===== MAP PICKER - FIX ZOOM CONTROLS ===== */
 /* ======================================== */
 
 .map-picker-wrapper {
@@ -315,32 +345,102 @@
   border-radius: 14px !important;
 }
 
+/* ✅ Custom Zoom Controls - Inside Map */
+.leaflet-control-zoom {
+  position: absolute !important;
+  top: 12px !important;
+  right: 12px !important;
+  z-index: 500 !important;
+  border: none !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+.leaflet-control-zoom a {
+  background: white !important;
+  color: #333 !important;
+  border: none !important;
+  border-bottom: 1px solid #eee !important;
+  width: 36px !important;
+  height: 36px !important;
+  line-height: 36px !important;
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  transition: background 0.2s ease !important;
+  display: block !important;
+  text-align: center !important;
+  text-decoration: none !important;
+  cursor: pointer !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background: #f5f5f5 !important;
+  color: #0c831f !important;
+}
+
+.leaflet-control-zoom a:last-child {
+  border-bottom: none !important;
+}
+
+.leaflet-control-zoom a:active {
+  background: #e8e8e8 !important;
+}
+
+/* ✅ Attribution stays at bottom */
+.leaflet-control-attribution {
+  position: absolute !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  background: rgba(255, 255, 255, 0.7) !important;
+  font-size: 10px !important;
+  padding: 2px 8px !important;
+  z-index: 400 !important;
+}
+
+/* ✅ Fix for Leaflet top/bottom containers */
+.leaflet-top,
+.leaflet-bottom {
+  position: absolute !important;
+  pointer-events: none !important;
+}
+
+.leaflet-top > *,
+.leaflet-bottom > * {
+  pointer-events: auto !important;
+}
+
+/* ======================================== */
 /* ===== LOCATION BUTTON ===== */
+/* ======================================== */
+
 .location-btn {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #0c831f, #0a6a18);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 50px;
-  font-weight: 700;
-  font-size: 14px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  box-shadow: 0 8px 30px rgba(12, 131, 31, 0.25);
-  z-index: 1000;
-  white-space: nowrap;
+  position: absolute !important;
+  bottom: 20px !important;
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  background: linear-gradient(135deg, #0c831f, #0a6a18) !important;
+  color: white !important;
+  border: none !important;
+  padding: 12px 24px !important;
+  border-radius: 50px !important;
+  font-weight: 700 !important;
+  font-size: 14px !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 10px !important;
+  box-shadow: 0 8px 30px rgba(12, 131, 31, 0.25) !important;
+  z-index: 1000 !important;
+  white-space: nowrap !important;
+  pointer-events: auto !important;
 }
 
 .location-btn:hover:not(:disabled) {
-  transform: translateX(-50%) translateY(-3px);
-  box-shadow: 0 12px 40px rgba(12, 131, 31, 0.35);
+  transform: translateX(-50%) translateY(-3px) !important;
+  box-shadow: 0 12px 40px rgba(12, 131, 31, 0.35) !important;
 }
 
 .location-btn:disabled {
@@ -362,11 +462,9 @@
   animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+/* ======================================== */
+/* ===== SELECTED LOCATION TEXT ===== */
+/* ======================================== */
 
 .selected-location-text {
   margin-top: 12px;
@@ -900,6 +998,11 @@
   .address-right-column {
     gap: 20px;
   }
+
+  .address-add-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -930,6 +1033,11 @@
     justify-content: center;
   }
 
+  .address-add-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
   .address-grid {
     grid-template-columns: 1fr;
   }
@@ -948,14 +1056,26 @@
     height: 280px;
   }
 
+  .leaflet-control-zoom {
+    top: 10px !important;
+    right: 10px !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+    font-size: 16px !important;
+  }
+
   .location-btn {
-    padding: 10px 18px;
-    font-size: 13px;
-    bottom: 16px;
+    padding: 10px 18px !important;
+    font-size: 13px !important;
+    bottom: 16px !important;
   }
 
   .location-btn i {
-    font-size: 16px;
+    font-size: 16px !important;
   }
 
   .address-card {
@@ -999,6 +1119,33 @@
   .form-group select {
     padding: 10px 12px;
     font-size: 13px;
+  }
+
+  .map-picker-wrapper {
+    height: 220px;
+  }
+
+  .leaflet-control-zoom {
+    top: 8px !important;
+    right: 8px !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 28px !important;
+    height: 28px !important;
+    line-height: 28px !important;
+    font-size: 14px !important;
+  }
+
+  .location-btn {
+    padding: 8px 14px !important;
+    font-size: 12px !important;
+    bottom: 12px !important;
+    gap: 6px !important;
+  }
+
+  .location-btn i {
+    font-size: 14px !important;
   }
 
   .address-card {
@@ -1053,21 +1200,6 @@
     padding: 8px 10px;
   }
 
-  .map-picker-wrapper {
-    height: 220px;
-  }
-
-  .location-btn {
-    padding: 8px 14px;
-    font-size: 12px;
-    bottom: 12px;
-    gap: 6px;
-  }
-
-  .location-btn i {
-    font-size: 14px;
-  }
-
   .address-empty-state {
     min-height: 160px;
     padding: 24px 16px;
@@ -1116,6 +1248,32 @@
     font-size: 12px;
   }
 
+  .map-picker-wrapper {
+    height: 180px;
+  }
+
+  .leaflet-control-zoom {
+    top: 6px !important;
+    right: 6px !important;
+  }
+
+  .leaflet-control-zoom a {
+    width: 24px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    font-size: 12px !important;
+  }
+
+  .location-btn {
+    padding: 6px 12px !important;
+    font-size: 11px !important;
+    bottom: 10px !important;
+  }
+
+  .location-btn i {
+    font-size: 12px !important;
+  }
+
   .address-primary-btn {
     padding: 10px 14px;
     font-size: 13px;
@@ -1132,15 +1290,5 @@
   .selected-location-text {
     font-size: 11px;
     padding: 6px 8px;
-  }
-
-  .location-btn {
-    padding: 6px 12px;
-    font-size: 11px;
-    bottom: 10px;
-  }
-
-  .location-btn i {
-    font-size: 12px;
   }
 }

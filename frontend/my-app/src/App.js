@@ -25,6 +25,8 @@ import SplashScreen from "./components/SplashScreen";
 import API from "./api/axios";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import SavedAddresses from "./pages/SavedAddresses";
+import EditAddress from "./pages/EditAddress"; 
 
 function App() {
   const [user, setUser] = useState(null);
@@ -150,6 +152,12 @@ function App() {
 
         {/* Address */}
         <Route path="/address" element={<Address />} />
+
+        {/* Saved Addresses */}
+        <Route path="/saved-addresses" element={<SavedAddresses />} />
+
+        {/* ✅ NEW: Edit Address Route */}
+        <Route path="/edit-address/:id" element={<EditAddress />} />
 
         {/* Checkout */}
         <Route path="/checkout" element={<Checkout />} />

@@ -22,6 +22,17 @@ export const getAddresses = async () => {
   }
 };
 
+// ✅ Get Single Address by ID
+export const getAddressById = async (id) => {
+  try {
+    const response = await API.get(`/api/address/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error fetching address:", error);
+    throw error;
+  }
+};
+
 // Update Address
 export const updateAddress = async (addressId, addressData) => {
   try {

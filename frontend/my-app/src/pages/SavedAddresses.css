@@ -1,0 +1,907 @@
+/* ======================================================
+   SAVED ADDRESSES PAGE - PREMIUM STYLING
+   ====================================================== */
+
+/* ----- 1. PAGE CONTAINER ----- */
+.saved-addresses-page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 32px 20px 48px;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ----- 2. LOADING STATE ----- */
+.saved-addresses-loading {
+  min-height: 60vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+.saved-addresses-loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #f0f0f0;
+  border-top-color: #0c831f;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.saved-addresses-loading p {
+  color: #666;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+/* ----- 3. HEADER ----- */
+.saved-addresses-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.saved-addresses-header-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.saved-addresses-header h1 {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #222;
+}
+
+.saved-addresses-header h1 i {
+  color: #0c831f;
+}
+
+.saved-addresses-count {
+  background: #f5f5f5;
+  padding: 4px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #666;
+}
+
+/* ----- 4. HEADER ACTIONS ----- */
+.saved-addresses-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.saved-addresses-secondary-btn {
+  background: #eef2ff;
+  color: #3730a3;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.saved-addresses-secondary-btn:hover {
+  background: #e0e5ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(55, 48, 163, 0.15);
+}
+
+.saved-addresses-secondary-btn:active {
+  transform: scale(0.95);
+}
+
+/* ----- 5. SUCCESS TOAST ----- */
+.saved-addresses-success-toast {
+  background: linear-gradient(135deg, #0c831f, #0a6a18);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 14px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 600;
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 10px 30px rgba(12, 131, 31, 0.3);
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ----- 6. ERROR MESSAGE ----- */
+.saved-addresses-error {
+  color: #b42318;
+  font-weight: 600;
+  margin-bottom: 20px;
+  padding: 12px 20px;
+  background: #fef2f2;
+  border-radius: 12px;
+  border: 1px solid #fee2e2;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ======================================================
+   DELETE CONFIRMATION MODAL
+   ====================================================== */
+
+.saved-addresses-delete-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+.saved-addresses-delete-modal {
+  background: white;
+  padding: 40px;
+  border-radius: 24px;
+  max-width: 420px;
+  width: 90%;
+  text-align: center;
+  animation: modalSlideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes modalSlideUp {
+  from {
+    transform: translateY(30px) scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.saved-addresses-delete-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.saved-addresses-delete-modal h3 {
+  font-size: 22px;
+  font-weight: 800;
+  color: #222;
+  margin-bottom: 8px;
+}
+
+.saved-addresses-delete-modal p {
+  color: #666;
+  margin-bottom: 25px;
+}
+
+.saved-addresses-delete-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.saved-addresses-delete-cancel {
+  background: #f5f5f5;
+  color: #666;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saved-addresses-delete-cancel:hover {
+  background: #eee;
+}
+
+.saved-addresses-delete-proceed {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.saved-addresses-delete-proceed:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(238, 90, 36, 0.3);
+}
+
+/* ======================================================
+   ADDRESS LIST CARD
+   ====================================================== */
+
+.saved-addresses-list-card {
+  background: #fff;
+  border: 1px solid rgba(238, 238, 238, 0.5);
+  border-radius: 20px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  transition: all 0.3s ease;
+}
+
+.saved-addresses-list-card:hover {
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.08);
+}
+
+.saved-addresses-list-card .section-heading {
+  margin-bottom: 18px;
+}
+
+.saved-addresses-list-card .section-heading h2 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #222;
+}
+
+.saved-addresses-list-card .section-heading h2 i {
+  color: #0c831f;
+}
+
+.saved-addresses-list-card .section-heading p {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ======================================================
+   ADDRESS CARDS
+   ====================================================== */
+
+.saved-addresses-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.saved-addresses-card {
+  border: 2px solid #ececec;
+  border-radius: 16px;
+  padding: 18px;
+  background: white;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: fadeInUp 0.5s ease forwards;
+  animation-delay: var(--delay, 0s);
+  opacity: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.saved-addresses-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(12, 131, 31, 0.02), rgba(255, 215, 0, 0.02));
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.saved-addresses-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(12, 131, 31, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.saved-addresses-card:hover::before {
+  opacity: 1;
+}
+
+.saved-addresses-card.default {
+  border-color: #0c831f;
+  background: linear-gradient(135deg, #ffffff, #f8fff9);
+}
+
+.saved-addresses-card.default::after {
+  content: '★';
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  font-size: 60px;
+  color: rgba(12, 131, 31, 0.05);
+  transform: rotate(15deg);
+}
+
+/* ----- 7. ADDRESS CARD TOP ----- */
+.saved-addresses-card-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.saved-addresses-card-header {
+  flex: 1;
+}
+
+.saved-addresses-card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #222;
+}
+
+.saved-addresses-address-icon {
+  font-size: 18px;
+}
+
+.saved-addresses-type-tag {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  background: #eef2ff;
+  color: #3730a3;
+  margin-top: 6px;
+}
+
+.saved-addresses-default-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  background: linear-gradient(135deg, #dcfce7, #bbf7d0);
+  color: #166534;
+  white-space: nowrap;
+}
+
+.saved-addresses-default-badge i {
+  font-size: 12px;
+}
+
+/* ----- 8. ADDRESS CARD BODY ----- */
+.saved-addresses-card-body {
+  margin-top: 12px;
+  color: #374151;
+}
+
+.saved-addresses-card-body p {
+  margin: 0 0 4px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.saved-addresses-card-body p i {
+  color: #0c831f;
+  font-size: 14px;
+  width: 18px;
+}
+
+.saved-addresses-mobile {
+  font-weight: 600;
+}
+
+.saved-addresses-landmark {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.saved-addresses-city {
+  font-weight: 500;
+}
+
+/* ======================================================
+   ADDRESS CARD ACTIONS
+   ====================================================== */
+
+.saved-addresses-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+  position: relative;
+  z-index: 10;
+}
+
+.saved-addresses-action-btn {
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  position: relative;
+  z-index: 20;
+  pointer-events: auto !important;
+}
+
+.saved-addresses-action-btn:hover {
+  transform: translateY(-2px);
+}
+
+.saved-addresses-action-btn:active {
+  transform: scale(0.95);
+}
+
+.saved-addresses-action-btn i {
+  font-size: 14px;
+}
+
+.saved-addresses-edit-btn {
+  background: #eef2ff;
+  color: #3730a3;
+}
+
+.saved-addresses-edit-btn:hover {
+  background: #e0e5ff;
+}
+
+.saved-addresses-delete-btn {
+  background: #fef2f2;
+  color: #b42318;
+}
+
+.saved-addresses-delete-btn:hover {
+  background: #fee2e2;
+}
+
+.saved-addresses-default-action-btn {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.saved-addresses-default-action-btn:hover {
+  background: #bbf7d0;
+}
+
+/* ======================================================
+   EMPTY STATE
+   ====================================================== */
+
+.saved-addresses-empty-state {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 8px;
+  border: 2px dashed #e5e7eb;
+  border-radius: 16px;
+  background: #fafafa;
+  padding: 30px 20px;
+}
+
+.saved-addresses-empty-icon {
+  font-size: 44px;
+  margin-bottom: 6px;
+}
+
+.saved-addresses-empty-state h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+  margin: 0;
+}
+
+.saved-addresses-empty-state p {
+  color: #6b7280;
+  font-size: 14px;
+  margin: 0;
+}
+
+.saved-addresses-empty-state .saved-addresses-primary-btn {
+  background: linear-gradient(135deg, #0c831f, #0a6a18);
+  color: #fff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 10px 30px rgba(12, 131, 31, 0.2);
+  margin-top: 10px;
+}
+
+.saved-addresses-empty-state .saved-addresses-primary-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 40px rgba(12, 131, 31, 0.3);
+}
+
+/* ======================================================
+   RESPONSIVE DESIGN
+   ====================================================== */
+
+/* ----- TABLETS ----- */
+@media (max-width: 1024px) {
+  .saved-addresses-page {
+    max-width: 100%;
+    padding: 24px 16px 40px;
+  }
+
+  .saved-addresses-header h1 {
+    font-size: 28px;
+  }
+}
+
+/* ----- MOBILE PHONES ----- */
+@media (max-width: 768px) {
+  .saved-addresses-page {
+    padding: 20px 16px 32px;
+  }
+
+  .saved-addresses-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+  }
+
+  .saved-addresses-header-left {
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .saved-addresses-header h1 {
+    font-size: 24px;
+  }
+
+  .saved-addresses-header-actions {
+    width: 100%;
+  }
+
+  .saved-addresses-header-actions button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .saved-addresses-list-card {
+    padding: 18px;
+    border-radius: 16px;
+  }
+
+  .saved-addresses-list-card .section-heading h2 {
+    font-size: 18px;
+  }
+
+  .saved-addresses-card {
+    padding: 16px;
+  }
+
+  .saved-addresses-card-header h3 {
+    font-size: 15px;
+  }
+
+  .saved-addresses-card-body p {
+    font-size: 13px;
+  }
+
+  .saved-addresses-card-actions {
+    flex-wrap: wrap;
+  }
+
+  .saved-addresses-action-btn {
+    padding: 6px 14px;
+    font-size: 11px;
+  }
+
+  .saved-addresses-delete-modal {
+    padding: 30px 20px;
+    margin: 16px;
+  }
+
+  .saved-addresses-delete-actions {
+    flex-direction: column;
+  }
+
+  .saved-addresses-delete-cancel,
+  .saved-addresses-delete-proceed {
+    width: 100%;
+  }
+
+  .saved-addresses-success-toast {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+
+  .saved-addresses-empty-state {
+    min-height: 160px;
+    padding: 24px 16px;
+  }
+
+  .saved-addresses-empty-icon {
+    font-size: 36px;
+  }
+
+  .saved-addresses-empty-state h3 {
+    font-size: 16px;
+  }
+
+  .saved-addresses-empty-state p {
+    font-size: 13px;
+  }
+}
+
+/* ----- SMALL PHONES ----- */
+@media (max-width: 480px) {
+  .saved-addresses-page {
+    padding: 16px 12px 32px;
+  }
+
+  .saved-addresses-header h1 {
+    font-size: 20px;
+  }
+
+  .saved-addresses-count {
+    font-size: 12px;
+    padding: 3px 10px;
+  }
+
+  .saved-addresses-header-actions button {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .saved-addresses-list-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .saved-addresses-list-card .section-heading h2 {
+    font-size: 16px;
+  }
+
+  .saved-addresses-list-card .section-heading p {
+    font-size: 13px;
+  }
+
+  .saved-addresses-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+
+  .saved-addresses-card-header h3 {
+    font-size: 14px;
+  }
+
+  .saved-addresses-card-body p {
+    font-size: 13px;
+  }
+
+  .saved-addresses-card-actions {
+    flex-direction: column;
+  }
+
+  .saved-addresses-action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+  }
+
+  .saved-addresses-success-toast {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .saved-addresses-empty-state {
+    min-height: 140px;
+    padding: 20px 16px;
+  }
+
+  .saved-addresses-empty-icon {
+    font-size: 32px;
+  }
+
+  .saved-addresses-empty-state h3 {
+    font-size: 15px;
+  }
+
+  .saved-addresses-empty-state p {
+    font-size: 12px;
+  }
+
+  .saved-addresses-empty-state .saved-addresses-primary-btn {
+    padding: 10px 18px;
+    font-size: 13px;
+  }
+}
+
+/* ----- EXTRA SMALL PHONES (360px) ----- */
+@media (max-width: 360px) {
+  .saved-addresses-header h1 {
+    font-size: 18px;
+  }
+
+  .saved-addresses-header-left {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .saved-addresses-list-card {
+    padding: 12px;
+  }
+
+  .saved-addresses-card {
+    padding: 12px;
+  }
+
+  .saved-addresses-card-header h3 {
+    font-size: 13px;
+  }
+
+  .saved-addresses-card-body p {
+    font-size: 12px;
+  }
+
+  .saved-addresses-action-btn {
+    font-size: 11px;
+    padding: 8px 12px;
+  }
+
+  .saved-addresses-delete-modal {
+    padding: 20px 16px;
+  }
+
+  .saved-addresses-delete-modal h3 {
+    font-size: 18px;
+  }
+
+  .saved-addresses-delete-modal p {
+    font-size: 14px;
+  }
+}
+
+/* ======================================================
+   REDUCED MOTION PREFERENCE
+   ====================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .saved-addresses-page {
+    animation: none;
+  }
+
+  .saved-addresses-card {
+    animation: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .saved-addresses-card:hover {
+    transform: none;
+  }
+
+  .saved-addresses-secondary-btn,
+  .saved-addresses-action-btn,
+  .saved-addresses-delete-cancel,
+  .saved-addresses-delete-proceed {
+    transition: none;
+  }
+
+  .saved-addresses-secondary-btn:hover,
+  .saved-addresses-action-btn:hover {
+    transform: none;
+  }
+
+  .saved-addresses-loading-spinner {
+    animation: none;
+    border-color: #0c831f;
+  }
+
+  .saved-addresses-success-toast {
+    animation: none;
+  }
+
+  .saved-addresses-delete-modal {
+    animation: none;
+  }
+}
+
+/* ======================================================
+   PRINT STYLES
+   ====================================================== */
+
+@media print {
+  .saved-addresses-page {
+    padding: 20px;
+    background: white;
+  }
+
+  .saved-addresses-list-card {
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+
+  .saved-addresses-card {
+    border: 1px solid #ddd;
+    page-break-inside: avoid;
+  }
+
+  .saved-addresses-card-actions,
+  .saved-addresses-header-actions {
+    display: none !important;
+  }
+
+  .saved-addresses-success-toast {
+    display: none !important;
+  }
+}

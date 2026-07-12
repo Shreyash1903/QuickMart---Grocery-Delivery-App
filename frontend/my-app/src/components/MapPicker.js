@@ -1,9 +1,9 @@
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import L from "leaflet";
 import { toast } from "react-toastify";
 
-delete L.Icon.Default.prototype._getIconUrl;
+delete L.Icon.Default.prototype._getUrl;
 
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:
@@ -97,7 +97,7 @@ function LocationMarker({ onLocationSelect, initialPosition, currentLocation, se
     initialPosition || [18.5204, 73.8567]
   );
 
-  useMapEvents({
+  const map = useMapEvents({
     async click(e) {
       const { lat, lng } = e.latlng;
       console.log("🗺️ Map clicked:", lat, lng);
@@ -117,7 +117,6 @@ function LocationMarker({ onLocationSelect, initialPosition, currentLocation, se
             displayName: data.display_name || "",
           });
         } else {
-          // Fallback: send coordinates only
           onLocationSelect({
             latitude: lat,
             longitude: lng,
@@ -127,7 +126,6 @@ function LocationMarker({ onLocationSelect, initialPosition, currentLocation, se
         }
       } catch (error) {
         console.error("Error getting address:", error);
-        // Send coordinates even if reverse geocoding fails
         onLocationSelect({
           latitude: lat,
           longitude: lng,
@@ -138,7 +136,6 @@ function LocationMarker({ onLocationSelect, initialPosition, currentLocation, se
     },
   });
 
-  // Update position when currentLocation changes
   useEffect(() => {
     if (currentLocation) {
       setPosition([currentLocation.lat, currentLocation.lng]);
@@ -146,6 +143,50 @@ function LocationMarker({ onLocationSelect, initialPosition, currentLocation, se
   }, [currentLocation]);
 
   return <Marker position={position} icon={locationIcon} />;
+}
+
+// ✅ Custom Zoom Controls Component
+function ZoomControls({ mapRef }) {
+  const handleZoomIn = (e) => {
+    e.preventDefault();
+    if (mapRef.current) {
+      const map = mapRef.current;
+      map.setZoom(map.getZoom() + 1);
+    }
+  };
+
+  const handleZoomOut = (e) => {
+    e.preventDefault();
+    if (mapRef.current) {
+      const map = mapRef.current;
+      map.setZoom(map.getZoom() - 1);
+    }
+  };
+
+  return (
+    <div className="leaflet-control-zoom leaflet-bar leaflet-control">
+      <a
+        className="leaflet-control-zoom-in"
+        href="#"
+        title="Zoom in"
+        role="button"
+        aria-label="Zoom in"
+        onClick={handleZoomIn}
+      >
+        +
+      </a>
+      <a
+        className="leaflet-control-zoom-out"
+        href="#"
+        title="Zoom out"
+        role="button"
+        aria-label="Zoom out"
+        onClick={handleZoomOut}
+      >
+        −
+      </a>
+    </div>
+  );
 }
 
 export default function MapPicker({ 
@@ -157,6 +198,7 @@ export default function MapPicker({
   const [isLocating, setIsLocating] = useState(false);
   const [mapCenter, setMapCenter] = useState(initialPosition || [18.5204, 73.8567]);
   const [mapKey, setMapKey] = useState(0);
+  const mapRef = useRef(null);
 
   const handleUseCurrentLocation = async () => {
     setIsLocating(true);
@@ -168,7 +210,6 @@ export default function MapPicker({
       setMapCenter([location.lat, location.lng]);
       setMapKey(prev => prev + 1);
 
-      // Reverse geocode to get address
       try {
         const data = await reverseGeocode(location.lat, location.lng);
         console.log("✅ Geocode response:", data);
@@ -185,7 +226,6 @@ export default function MapPicker({
             autoClose: 3000,
           });
         } else {
-          // Fallback: send coordinates only
           onLocationSelect({
             latitude: location.lat,
             longitude: location.lng,
@@ -199,7 +239,6 @@ export default function MapPicker({
         }
       } catch (geocodeError) {
         console.error("Geocode error:", geocodeError);
-        // Send coordinates only
         onLocationSelect({
           latitude: location.lat,
           longitude: location.lng,
@@ -229,6 +268,8 @@ export default function MapPicker({
           key={mapKey}
           center={mapCenter}
           zoom={15}
+          ref={mapRef}
+          zoomControl={false}
           style={{
             height: "100%",
             width: "100%",
@@ -248,7 +289,10 @@ export default function MapPicker({
           />
         </MapContainer>
 
-        {/* Location Button */}
+        {/* ✅ Custom Zoom Controls */}
+        <ZoomControls mapRef={mapRef} />
+
+        {/* ✅ Location Button - Inside map container */}
         {showLocationButton && (
           <button
             className="location-btn"

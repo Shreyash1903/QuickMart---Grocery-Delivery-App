@@ -299,7 +299,7 @@ function Checkout() {
 
   // Handle Edit Address - Navigate to address page with edit mode
   const handleEditAddress = (addressId) => {
-    navigate(`/address?edit=${addressId}`);
+    navigate(`/edit-address/${addressId}`);
   };
 
   if (loading) {
@@ -489,19 +489,48 @@ function Checkout() {
           </button>
         </form>
 
+        {/* ===== ORDER SUMMARY - WITH CART ITEMS ===== */}
         <aside className="checkout-summary-card">
           <h2>
             <i className="bi bi-receipt"></i> Order Summary
           </h2>
 
-          <div className="summary-row">
-            <span>Total Items</span>
-            <span>{totalItems}</span>
+          {/* ✅ Cart Items List */}
+          <div className="order-items-list">
+            <div className="order-items-header">
+              <span>{totalItems} {totalItems === 1 ? "Item" : "Items"}</span>
+            </div>
+
+            {/* Individual cart items */}
+            {cart.items.map((item) => (
+              <div key={item._id} className="order-item">
+                <div className="order-item-image">
+                  <img 
+                    src={item.product?.image || "https://via.placeholder.com/50"} 
+                    alt={item.product?.name || "Product"} 
+                  />
+                </div>
+                <div className="order-item-details">
+                  <div className="order-item-name">
+                    {item.product?.name || "Product"}
+                  </div>
+                  <div className="order-item-meta">
+                    <span className="order-item-qty">Qty: {item.quantity}</span>
+                    <span className="order-item-price">
+                      {formatPrice((item.product?.discountPrice || item.product?.price || 0) * item.quantity)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
 
+          <div className="summary-divider"></div>
+
+          {/* Price breakdown */}
           <div className="summary-row">
-            <span>Products</span>
-            <span>{cart.items.length}</span>
+            <span>Subtotal</span>
+            <span>{formatPrice(cart.totalPrice)}</span>
           </div>
 
           <div className="summary-divider"></div>

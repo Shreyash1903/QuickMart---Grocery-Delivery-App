@@ -60,6 +60,45 @@ class AddressController {
         }
     };
 
+    // ✅ NEW: Get Single Address by ID
+    static getAddressById = async (req, res) => {
+        try {
+            const userId = req.user.userId;
+            const { id } = req.params;
+
+            // Validate ID format
+            if (!id || id.length !== 24) {
+                return res.status(400).json({
+                    success: false,
+                    message: "Invalid address ID format"
+                });
+            }
+
+            const address = await AddressModel.findOne({
+                _id: id,
+                user: userId
+            });
+
+            if (!address) {
+                return res.status(404).json({
+                    success: false,
+                    message: "Address not found"
+                });
+            }
+
+            res.status(200).json({
+                success: true,
+                address
+            });
+
+        } catch (error) {
+            res.status(500).json({
+                success: false,
+                message: error.message
+            });
+        }
+    };
+
     // Update Address
     static updateAddress = async (req, res) => {
         try {

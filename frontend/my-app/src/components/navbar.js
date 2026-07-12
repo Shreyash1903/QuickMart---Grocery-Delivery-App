@@ -257,9 +257,10 @@ function Navbar({ user, handleLogout }) {
                     <i className="bi bi-box-seam"></i>
                     <span>My Orders</span>
                   </button>
+                  {/* ✅ FIXED: Navigate to saved-addresses instead of address */}
                   <button
                     className="account-menu-item"
-                    onClick={() => handleNavClick("/address")}
+                    onClick={() => handleNavClick("/saved-addresses")}
                   >
                     <i className="bi bi-geo-alt"></i>
                     <span>Saved Addresses</span>
@@ -387,11 +388,11 @@ function Navbar({ user, handleLogout }) {
                 </button>
               )}
 
-              {/* Addresses - Only when logged in */}
+              {/* ✅ FIXED: Addresses - Navigate to saved-addresses */}
               {isLoggedIn && (
                 <button 
                   className="mobile-menu-item"
-                  onClick={() => handleNavClick("/address")}
+                  onClick={() => handleNavClick("/saved-addresses")}
                 >
                   <i className="bi bi-geo-alt"></i>
                   <span>Saved Addresses</span>
